@@ -46,10 +46,21 @@ const ll INF = 2123456789;
 const ll INF64 = 1223372036854775807;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
+map<string, int>mp;
 
 int main()
 {
-
+    int n;
+    cin >> n;
+    for(int i = 0; i < n; i++){
+        string s;
+        cin >> s;
+        if(mp[s])cout << "YES" << endl;
+        else{
+            cout << "NO" << endl;
+            mp[s] = 1;
+        }
+    }
 	return 0;
 }
 
