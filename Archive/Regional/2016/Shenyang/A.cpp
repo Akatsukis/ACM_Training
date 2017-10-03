@@ -49,7 +49,13 @@ template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
 
 int main()
 {
-
+    int T;
+    scanf("%d", &T);
+    while(T--){
+        int a, b;
+        scanf("%d%d", &a, &b);
+        printf("%d\n", max(2 * a + b, 2 * b + a));
+    }
 	return 0;
 }
 
