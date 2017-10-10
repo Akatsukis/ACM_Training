@@ -38,25 +38,64 @@ using namespace std;
 #define freout1 freopen("out1.txt", "w", stdout)
 #define lson(rt) (rt*2+1)
 #define rson(rt) (rt*2+2)
-#define lb puts("")
 #define debug cout<<"???"<<endl
 #define PI 3.1415926535897932
 const ll mod = 1000000007;
-const ll INF = 2123456789;
+const ll INF = 0x3f3f3f3f;
 const ll INF64 = 1223372036854775807;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-char s[2][2010];
+int n, q;
+const int maxn = 1e5 + 10;
+const int maxb = 1000;
+int nums[maxn];
+int A[maxn];
+vector<int> bucket[maxn / maxb];
+
+void solve()
+{
+    int b = sqrt(n*log2(n));
+    for(int i = 0; i < n; i++){
+        scanf("%d", &A[i]);
+        bucket[i / b].pb(A[i]);
+        nums[i] = A[i];
+    }
+    sort(nums, nums + n);
+    for(int i = 0; i < n / b; i++)sort(ALL(bucket[i]));
+    for(int i = 0; i < q; i++){
+        int l, r, k;
+        scanf("%d%d%d", &l, &r, &k);
+        l--;
+        int ls = 0, rs = n - 1, ans = 0;
+        while(ls <= rs){
+            int mid = (ls + rs) / 2;
+            int x = nums[mid];
+            int t1 = l, t2 = r, c = 0;
+            while(t1 < t2 && t1 % b != 0)if(A[t1++] <= x)c++;
+            while(t1 < t2 && t2 % b != 0)if(A[--t2] <= x)c++;
+            while(t1 < t2){
+                int nb = t1 / b;
+                c += upper_bound(ALL(bucket[nb]), x) - bucket[nb].begin();
+                t1 += b;
+            }
+            if(c >= k){
+                rs = mid - 1;
+                ans = mid;
+            }
+            else ls = mid + 1;
+        }
+        printf("%d\n", nums[ans]);
+    }
+}
 
 int main()
 {
-    int T;
-    scanf("%d", &T);
-    while(T--){
-        int n;
-        scanf("%d", &n);
-
-    }
+    //int n = maxn;
+    //int maxq = 5e3;
+    //printf("%f\n", sqrt(maxn * log2(maxn)));
+    //printf("%f\n", n*log2(n)+q*sqrt(n)*pow(log2(n), 1.5));
+    sc(n);sc(q);
+    solve();
 	return 0;
 }
 

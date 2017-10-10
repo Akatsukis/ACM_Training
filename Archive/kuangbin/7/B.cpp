@@ -46,15 +46,31 @@ const ll INF = 2123456789;
 const ll INF64 = 1223372036854775807;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-char s[2][2010];
+const int maxn = 2e5 + 10;
+const int maxb = floor(sqrt(maxn)) + 10;
+int n, m;
+int buc[maxb][maxb];
+int maxval[maxb];
 
 int main()
 {
-    int T;
-    scanf("%d", &T);
-    while(T--){
-        int n;
-        scanf("%d", &n);
+    while(scanf("%d%d", &n, &m) != EOF){
+        memset(buc, 0, sizeof(buc));
+        memset(maxval, 0, sieof(maxval));
+        int b = floor(sqrt(n));
+        for(int i = 0; i < n; i++){
+            int x = i / b;
+            int y = i - x * b;
+            scanf("%d", &buc[x][y]);
+            if(y == b - 1 || i == n - 1){
+                int maxx = 0;
+                for(int j = 0; j < b; j++){
+                    maxx = max(maxx, buc[x][y]);
+                }
+                maxval[x] = maxx;
+            }
+        }
+
 
     }
 	return 0;

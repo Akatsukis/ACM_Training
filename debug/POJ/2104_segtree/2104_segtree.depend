@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1507637123 source:f:\github\acm_training\debug\poj\2104_segtree\main.cpp
+	<iostream>
+	<cstdio>
+	<cctype>
+	<algorithm>
+	<cstring>
+	<string>
+	<cmath>
+	<vector>
+	<set>
+	<stack>
+	<sstream>
+	<queue>
+	<map>
+	<functional>
+	<bitset>
+

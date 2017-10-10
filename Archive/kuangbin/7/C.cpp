@@ -46,16 +46,58 @@ const ll INF = 2123456789;
 const ll INF64 = 1223372036854775807;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-char s[2][2010];
+const int maxn = 1e5 + 10;
+ll bit0[maxn];
+ll bit1[maxn];
+int n, q;
+
+void add(ll bit[], int pos, ll val)
+{
+    for(int i = pos; i <= n; i += (i&-i)){
+        bit[i] += val;
+    }
+}
+
+ll sum(ll bit[], int pos)
+{
+    ll res = 0;
+    for(int i = pos; i; i -= (i&-i)){
+        res += bit[i];
+    }
+    return res;
+}
 
 int main()
 {
-    int T;
-    scanf("%d", &T);
-    while(T--){
-        int n;
-        scanf("%d", &n);
-
+    sc(n);sc(q);
+    for(int i = 1; i <= n; i++){
+        int x;
+        scanf("%d", &x);
+        add(bit0, i, x);
+    }
+//    for(int i = 1; i <= n; i++){
+//        printf("bit[%d]:%lld\n", i, bit0[i]);
+//    }
+    for(int i = 0; i < q; i++){
+        char s[2];
+        scanf("%s", s);
+        if(s[0] == 'C'){
+            int l, r;
+            ll c;
+            scanf("%d%d%lld", &l, &r, &c);
+            add(bit0, l, -c*(l-1));
+            add(bit1, l, c);
+            add(bit0, r+1, c*r);
+            add(bit1, r+1, -c);
+        }
+        else if(s[0] == 'Q'){
+            int l, r;
+            scanf("%d%d", &l, &r);
+            ll ans = 0;
+            ans += sum(bit0, r) + sum(bit1, r)*r;
+            ans -= sum(bit0, l-1) + sum(bit1, l-1)*(l-1);
+            printf("%lld\n", ans);
+        }
     }
 	return 0;
 }
