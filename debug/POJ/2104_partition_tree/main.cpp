@@ -45,72 +45,75 @@ const ll INF = 0x3f3f3f3f;
 const ll INF64 = 1223372036854775807;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-int n, m;
 const int maxn = 1e5 + 10;
-const int ST_SIZE = (1 << 18) - 1;
-vector<int> dat[ST_SIZE];
-int A[maxn];
-int nums[maxn];
-
-void init(int k, int l, int r)
+const int deep = 18;
+typedef struct
 {
-    if(r - l == 1){
-        dat[k].pb(A[l]);
-    }
-    else{
-        int lch = k * 2 + 1, rch = k * 2 + 2;
-        init(lch, l, (l + r) / 2);
-        init(rch, (l + r) / 2, r);
-        dat[k].resize(r - l);
-        merge(ALL(dat[lch]), ALL(dat[rch]), dat[k].begin());
-    }
-}
+    int num[maxn];
+    int cnt[maxn];
+}partition_tree;
+partition_tree tree[deep];
+int sorted[maxn];
 
-int query(int i, int j, int x, int k, int l, int r)
+void build(int d, int l, int r)
 {
-    if(j <= l || r <= i)return 0;
-    else if(i <= l && r <= j){
-        return upper_bound(ALL(dat[k]), x) - dat[k].begin();
+    if(l == r)return;
+    int m = (l + r) >> 1;
+    int need = m - l + 1;
+    for(int i = l; i <= r; i++){
+        if(tree[d].num[i] < sorted[m])need--;
     }
-    else{
-        int lc = query(i, j, x, k * 2 + 1, l, (l + r) / 2);
-        int rc = query(i, j, x, k * 2 + 2, (l + r) / 2, r);
-        return lc + rc;
-    }
-}
-
-void solve()
-{
-    for(int i = 0; i < n; i++){
-        scanf("%d", &A[i]);
-        nums[i] = A[i];
-    }
-    sort(nums, nums + n);
-    init(0, 0, n);
-    for(int i = 0; i < m; i++){
-        int l, r, k;
-        scanf("%d%d%d", &l, &r, &k);
-        l--;
-        int ls = 0, rs = n - 1, ans = 0;
-        while(ls <= rs){
-            int mid = (ls + rs) / 2;
-            int c = query(l, r, nums[mid], 0, 0, n);
-            if(c >= k){
-                rs = mid - 1;
-                ans = mid;
-            }
-            else ls = mid + 1;
+    int p = l, q = m + 1;
+    for(int i = l, cnt = 0; i <= r; i++){
+        int num = tree[d].num[i];
+        if(num < sorted[m] || (num == sorted[m] && need)){
+            if(num == sorted[m])need--;
+            cnt++;
+            tree[d + 1].num[p++] = num;
         }
-        printf("%d\n", nums[ans]);
+        else tree[d + 1].num[q++] = num;
+        tree[d].cnt[i] = cnt;
+    }
+    build(d + 1, l, m);
+    build(d + 1, m + 1, r);
+}
+
+int query(int d, int l, int r, int ql, int qr, int k)
+{
+    if(l == r)return tree[d].num[l];
+    int ly;
+    if(l == ql)ly = 0;
+    else ly = tree[d].cnt[ql-1];
+    int tot = tree[d].cnt[qr] - ly;
+    int newl, newr, mid = (l + r) / 2;
+    if(tot >= k){
+        newl = l + ly;
+        newr = newl + tot - 1;
+        return query(d + 1, l, mid, newl, newr, k);
+    }
+    else {
+        newl = mid + 1 + (ql - l - ly);
+        newr = newl + ((qr-ql+1)-tot) - 1;
+        return query(d + 1, mid + 1, r,  newl, newr, k - tot);
     }
 }
 
 int main()
 {
-    //frein;
-    //freout;
+    int n, m;
     sc(n);sc(m);
-    solve();
+    for(int i = 1; i <= n; i++){
+        scanf("%d", &tree[0].num[i]);
+        sorted[i] = tree[0].num[i];
+    }
+    sort(sorted + 1, sorted + n + 1);
+    build(0, 1, n);
+    for(int i = 0; i < m; i++){
+        int l, r, k;
+        scanf("%d%d%d", &l, &r, &k);
+        int ans = query(0, 1, n, l, r, k);
+        printf("%d\n", ans);
+    }
 }
 
 

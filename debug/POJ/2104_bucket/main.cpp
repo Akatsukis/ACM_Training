@@ -47,14 +47,30 @@ const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
 int n, q;
 const int maxn = 1e5 + 10;
-const int maxb = 1000;
+const int b = 1289;
 int nums[maxn];
 int A[maxn];
-vector<int> bucket[maxn / maxb];
+vector<int> bucket[maxn];
+
+int upb(int id, int x)
+{
+    int l = 0, r = bucket[id].size() - 1;
+    int ans = bucket[id].size();
+    while(l <= r){
+        int mid = (l + r) / 2;
+        if(bucket[id][mid] > x){
+            ans = mid;
+            r = mid - 1;
+        }
+        else l = mid + 1;
+    }
+    return ans;
+}
 
 void solve()
 {
-    int b = sqrt(n*log2(n));
+    //int b = sqrt(maxn * log2(maxn));
+    //if(!b)b++;
     for(int i = 0; i < n; i++){
         scanf("%d", &A[i]);
         bucket[i / b].pb(A[i]);
@@ -75,9 +91,10 @@ void solve()
             while(t1 < t2 && t2 % b != 0)if(A[--t2] <= x)c++;
             while(t1 < t2){
                 int nb = t1 / b;
-                c += upper_bound(ALL(bucket[nb]), x) - bucket[nb].begin();
+                c += upb(nb, x);
                 t1 += b;
             }
+            //if(i == 2)cout << c << endl;
             if(c >= k){
                 rs = mid - 1;
                 ans = mid;
@@ -90,10 +107,8 @@ void solve()
 
 int main()
 {
-    //int n = maxn;
-    //int maxq = 5e3;
-    //printf("%f\n", sqrt(maxn * log2(maxn)));
-    //printf("%f\n", n*log2(n)+q*sqrt(n)*pow(log2(n), 1.5));
+    //frein;
+    //freout;
     sc(n);sc(q);
     solve();
 	return 0;

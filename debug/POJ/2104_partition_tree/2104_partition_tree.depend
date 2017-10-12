@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1507686601 source:f:\github\acm_training\debug\poj\2104_segtree\main.cpp
+1507793892 source:f:\github\acm_training\debug\poj\2104_partition_tree\main.cpp
 	<iostream>
 	<cstdio>
 	<cctype>
