@@ -46,31 +46,29 @@ const ll INF = 2123456789;
 const ll INF64 = 1223372036854775807;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 1000 + 10;
-int a[maxn];
-int b[maxn];
-int n;
-
-
-int solve(int a[], int b[], int sz)
-{
-    if(sz == 1)return a[0] < b[0] ? a[0] : b[0];
-    int m = sz / 2;
-    if(a[m] == b[m])return a[m];
-    else if(a[m] > b[m])return solve(a, b + m, sz - m);
-    else if(a[m] < b[m])return solve(a + m, b, sz - m);
-}
+int a[10][10];
 
 int main()
 {
-    scanf("%d", &n);
-    for(int i = 0; i < n; i++){
-        scanf("%d", &a[i]);
+    int n, x, y, z;
+    sc(n);sc(x);sc(y);sc(z);
+    a[1][2] = a[2][1] = x;
+    a[1][3] = a[3][1] = y;
+    a[2][3] = a[3][2] = z;
+    int ans = 0, now = 1;
+    while(--n){
+        int u = -1;
+        int cost = 0;
+        for(int i = 1; i <= 3; i++){
+            if(i == now)continue;
+            if(u == -1 || a[now][i] < cost){
+                u = i;
+                cost = a[now][i];
+            }
+        }
+        ans += cost;
+        now = u;
     }
-    for(int i = 0; i < n; i++){
-        scanf("%d", &b[i]);
-    }
-    int ans = solve(a, b, n);
     printf("%d\n", ans);
 	return 0;
 }

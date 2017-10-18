@@ -46,32 +46,23 @@ const ll INF = 2123456789;
 const ll INF64 = 1223372036854775807;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 1000 + 10;
-int a[maxn];
-int b[maxn];
-int n;
-
-
-int solve(int a[], int b[], int sz)
-{
-    if(sz == 1)return a[0] < b[0] ? a[0] : b[0];
-    int m = sz / 2;
-    if(a[m] == b[m])return a[m];
-    else if(a[m] > b[m])return solve(a, b + m, sz - m);
-    else if(a[m] < b[m])return solve(a + m, b, sz - m);
-}
+int a[300100];
+bool vis[300100];
 
 int main()
 {
-    scanf("%d", &n);
+    int n;
+    sc(n);
     for(int i = 0; i < n; i++){
-        scanf("%d", &a[i]);
+        sc(a[i]);
     }
-    for(int i = 0; i < n; i++){
-        scanf("%d", &b[i]);
+    int pos = n + 1;
+    for(int i = 0; i <= n; i++){
+        if(i)vis[a[i - 1]] = 1;
+        while(vis[pos - 1])pos--;
+        //printf("pos=%d\n", pos);
+        printf("%d%c", i - (n - pos), i == n ? '\n' : ' ');
     }
-    int ans = solve(a, b, n);
-    printf("%d\n", ans);
 	return 0;
 }
 

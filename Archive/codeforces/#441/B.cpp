@@ -46,32 +46,27 @@ const ll INF = 2123456789;
 const ll INF64 = 1223372036854775807;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 1000 + 10;
-int a[maxn];
-int b[maxn];
-int n;
-
-
-int solve(int a[], int b[], int sz)
-{
-    if(sz == 1)return a[0] < b[0] ? a[0] : b[0];
-    int m = sz / 2;
-    if(a[m] == b[m])return a[m];
-    else if(a[m] > b[m])return solve(a, b + m, sz - m);
-    else if(a[m] < b[m])return solve(a + m, b, sz - m);
-}
+int a[100100];
+vector<int> v[100100];
 
 int main()
 {
-    scanf("%d", &n);
+    int n, k, m;
+    sc(n);sc(k);sc(m);
     for(int i = 0; i < n; i++){
-        scanf("%d", &a[i]);
+        sc(a[i]);
+        v[a[i] % m].pb(a[i]);
     }
-    for(int i = 0; i < n; i++){
-        scanf("%d", &b[i]);
+    for(int i = 0; i < m; i++){
+        if((int)v[i].size() >= k){
+            printf("Yes\n");
+            for(int j = 0; j < k; j++){
+                printf("%d%c", v[i][j], j == k - 1 ? '\n' :' ');
+            }
+            return 0;
+        }
     }
-    int ans = solve(a, b, n);
-    printf("%d\n", ans);
+    printf("No\n");
 	return 0;
 }
 

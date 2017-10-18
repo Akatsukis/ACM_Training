@@ -46,59 +46,35 @@ const ll INF = 2123456789;
 const ll INF64 = 1223372036854775807;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 1000 + 10;
-int a[maxn];
-int b[maxn];
+vector<int> ans;
 
-int solve(int n)
+int cal(int num)
 {
-    int l[2], r[2];
-    l[0] = l[1] = 0, r[0] = r[1] = n - 1;
-    int k = n;
-    while(l[0] <= r[0] && l[1] <= r[1] && k != 1){
-        printf("%d %d %d %d %d\n", l[0], r[0], l[1], r[1], k);
-        int m[2];
-        m[0] = (l[0] + r[0]) / 2, m[1] = (l[1] + r[1]) / 2;
-        cout << a[m[0]] << b[m[1]] << endl;
-        if(a[m[0]] >= b[m[1]]){
-            int cur = (m[0]-l[0]+1) + (m[1]-l[1]+1);
-            if(cur >= k){
-                r[0] = m[0];
-            }
-            else{
-                k -= (m[1]-l[1]+1);
-                l[1] = m[1] + 1;
-            }
-        }
-        else{
-            int cur = (m[0]-l[0]+1) + (m[1]-l[1]+1);
-            if(cur >= k){
-                r[1] = m[1];
-            }
-            else{
-                k -= (m[0]-l[0]+1);
-                l[0] = m[0] + 1;
-            }
-        }
+    int res = 0;
+    while(num){
+        res += num % 10;
+        num /= 10;
     }
-    if(l[0] > r[0])return b[l[1]];
-    if(l[1] > r[1])return a[l[1]];
-    return a[l[1]] < b[l[1]] ? a[l[1]] : b[l[1]];
+    return res;
+}
+
+void solve(int n)
+{
+    for(int i = max(0, n - 100); i <= n; i++){
+        if(i + cal(i) == n)ans.pb(i);
+    }
+    printf("%d\n", (int)ans.size());
+    for(int i = 0; i < (int)ans.size(); i++){
+        printf("%d%c", ans[i], i == (int)ans.size() - 1 ? '\n' : ' ');
+    }
+    return;
 }
 
 int main()
 {
-    frein;
     int n;
-    scanf("%d", &n);
-    for(int i = 0; i < n; i++){
-        scanf("%d", &a[i]);
-    }
-    for(int i = 0; i < n; i++){
-        scanf("%d", &b[i]);
-    }
-    int ans = solve(n);
-    printf("%d\n", ans);
+    sc(n);
+    solve(n);
 	return 0;
 }
 
