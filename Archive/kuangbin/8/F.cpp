@@ -47,7 +47,7 @@ const ll INF64 = 1223372036854775807;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
 const int maxn = 1000 + 10;
-const int maxm = 4e4 + 10;
+const int maxm = 40000 + 10;
 int n, m;
 struct edge
 {
@@ -66,10 +66,9 @@ int zhuliu(int root)
             in[i] = INF;
         }
         for(int i = 0; i < m; i++){
-            edge e = es[i];
-            if(e.u != e.v && in[e.v] > e.w){
-                in[e.v] = e.w;
-                pre[e.v] = e.u;
+            if(es[i].u != es[i].v && in[es[i].v] > es[i].w){
+                in[es[i].v] = es[i].w;
+                pre[es[i].v] = es[i].u;
             }
         }
         for(int i = 0; i < n; i++){
@@ -80,14 +79,13 @@ int zhuliu(int root)
         memset(id, -1, sizeof(id));
         in[root] = 0;
         for(int i = 0; i < n; i++){
-            int v;
             res += in[i];
-            v = i;
-            while(vis[v] != i && id[v] != -1 && v != root){
+            int v = i;
+            while(vis[v] != i && id[v] == -1 && v != root){
                 vis[v] = i;
                 v = pre[v];
             }
-            if(id[v] != -1 && v != root){
+            if(vis[v] == i){
                 for(int j = pre[v]; j != v; j = pre[j]){
                     id[j] = loop;
                 }
@@ -117,7 +115,7 @@ void work()
     for(int i = 0; i < m; i++){
         int u, v, w;
         sc(u);sc(v);sc(w);
-        es[i].u = u, es[i].v = v, es[i].w = w;
+        es[i].u = u, es[i].v = v, es[i].w = (u == v ? INF : w);
     }
     int ans = zhuliu(0);
     if(ans == -1)printf("Possums!\n");
