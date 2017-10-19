@@ -62,25 +62,25 @@ int zhuliu(int root)
 {
     int res = 0;
     while(1){
-        for(int i = 0; i < n; i++){
-            in[i] = INF;
-        }
+        for(int i = 0; i < n; i++)in[i] = INF;
         for(int i = 0; i < m; i++){
-            if(es[i].u != es[i].v && in[es[i].v] > es[i].w){
-                in[es[i].v] = es[i].w;
-                pre[es[i].v] = es[i].u;
+            int u = es[i].u;
+            int v = es[i].v;
+            if(u != v && in[v] > es[i].w){
+                in[v] = es[i].w;
+                pre[v] = u;
             }
         }
         for(int i = 0; i < n; i++){
             if(i != root && in[i] == INF)return -1;
         }
-        int loop = 0;
-        memset(vis, -1, sizeof(vis));
         memset(id, -1, sizeof(id));
+        memset(vis, -1, sizeof(vis));
         in[root] = 0;
+        int loop = 0;
         for(int i = 0; i < n; i++){
-            res += in[i];
             int v = i;
+            res += in[i];
             while(vis[v] != i && id[v] == -1 && v != root){
                 vis[v] = i;
                 v = pre[v];
@@ -97,10 +97,11 @@ int zhuliu(int root)
             if(id[i] == -1)id[i] = loop++;
         }
         for(int i = 0; i < m; i++){
+            int v = es[i].v;
             es[i].u = id[es[i].u];
             es[i].v = id[es[i].v];
             if(es[i].u != es[i].v){
-                es[i].w -= in[es[i].v];
+                es[i].w -= in[v];
             }
         }
         n = loop;
@@ -109,28 +110,29 @@ int zhuliu(int root)
     return res;
 }
 
-void work()
+void work(int kase)
 {
     sc(n);sc(m);
     for(int i = 0; i < m; i++){
         int u, v, w;
         sc(u);sc(v);sc(w);
-        es[i].u = u, es[i].v = v, es[i].w = (u == v ? INF : w);
+        es[i].u = u;
+        es[i].v = v;
+        es[i].w = w;
     }
     int ans = zhuliu(0);
-    if(ans == -1)printf("Possums!\n");
-    else printf("%d\n", ans);
+    if(ans != -1)printf("Case #%d: %d\n", kase, ans);
+    else printf("Case #%d: Possums!\n", kase);
 }
+
 
 int main()
 {
     int T, kase = 1;
     sc(T);
     while(T--){
-        printf("Case #%d: ", kase++);
-        work();
+        work(kase++);
     }
-	return 0;
 }
 
 
