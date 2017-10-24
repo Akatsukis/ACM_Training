@@ -31,7 +31,7 @@ using namespace std;
 #define repab(i,a,b) for(int (i)=(int)(a);(i)<=(int)(b);(i)++)
 #define reprab(i,a,b) for(int (i)=(int)(a);(i)>=(int)(b);(i)--)
 #define sc(x) scanf("%d", &x)
-#define pr(x) printf("x:%dn", x)
+#define pr(x) printf(#x"=%d\n", x)
 #define fastio ios::sync_with_stdio(0),cin.tie(0)
 #define frein freopen("in.txt", "r", stdin)
 #define freout freopen("out.txt", "w", stdout)
@@ -42,61 +42,46 @@ using namespace std;
 #define debug cout<<"???"<<endl
 #define PI 3.1415926535897932
 const ll mod = 1000000007;
-const double INF = 213456789.0;
-const ll INF64 = 1223372036854775807;
+const ll INF = 2123456789;
+const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 100 + 10;
-const int maxm = 2000 + 10;
+const int maxn = 1e3 + 10;
+const int maxm = 2e4 + 10;
+int n, m;
 struct edge
 {
     int u, v;
-    double w;
+    ll w;
 }es[maxm];
-int n, m;
-int x[maxn];
-int y[maxn];
-int pre[maxn];
 int id[maxn];
-double in[maxn];
 int vis[maxn];
+int pre[maxn];
+ll in[maxn];
+int minroot;
 
-double dist(int i, int j)
-{
-    double res = (x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j]);
-    return sqrt(res);
-}
 
-void add_edge(int i, int u, int v)
+ll zhuliu(int root, int V, int E)
 {
-    es[i].u = u, es[i].v = v, es[i].w = dist(u, v);
-}
-
-double zhuliu(int root)
-{
-    double res = 0;
+    ll res = 0;
     while(1){
-        for(int i = 0; i < n; i++){
-            in[i] = INF;
-        }
-        for(int i = 0; i < m; i++){
-            edge cur = es[i];
-            if(cur.u != cur.v && in[cur.v] > cur.w){
-                in[cur.v] = cur.w;
-                pre[cur.v] = cur.u;
-                //printf("in[%d]:%f\n", cur.v, in[cur.v]);
+        for(int i = 0; i < V; i++)in[i] = INF64;
+        for(int i = 0; i < E; i++){
+            int u = es[i].u, v = es[i].v;
+            if(u != v && in[v] > es[i].w){
+                in[v] = es[i].w;
+                pre[v] = u;
+                if(u == root)minroot = i;
             }
         }
-        for(int i = 0; i < n; i++){
-            if(i != root && fabs(in[i] - INF) < eps){
-                return INF;
-            }
+        for(int i = 0; i < V; i++){
+            if(i != root && in[i] == INF64)return -1;
         }
-        int loop = 0;
         memset(id, -1, sizeof(id));
-        memset(vis, -1, sizeof(vis));
+        memset(vis,  -1, sizeof(vis));
         in[root] = 0;
-        for(int i = 0; i < n; i++){
+        int loop = 0;
+        for(int i = 0; i < V; i++){
             int v = i;
             res += in[i];
             while(vis[v] != i && id[v] == -1 && v != root){
@@ -110,45 +95,43 @@ double zhuliu(int root)
                 id[v] = loop++;
             }
         }
-        //printf("res=%f\n", res);
         if(!loop)break;
-        for(int i = 0; i < n; i++){
-            if(id[i] == -1){
-                id[i] = loop++;
-            }
+        for(int i = 0; i < V; i++){
+            if(id[i] == -1)id[i] = loop++;
         }
-        for(int i = 0; i < m; i++){
-            int v = es[i].v;
+        for(int i = 0; i < E; i++){
+            int u = es[i].u, v = es[i].v;
             es[i].u = id[es[i].u];
             es[i].v = id[es[i].v];
             if(es[i].u != es[i].v){
                 es[i].w -= in[v];
             }
         }
-        n = loop;
+        V = loop;
         root = id[root];
     }
     return res;
 }
 
+
 void work()
 {
-    for(int i = 0; i < n; i++){
-        sc(x[i]);sc(y[i]);
-    }
+    ll sum = 1;
     for(int i = 0; i < m; i++){
-        int u, v;
-        sc(u);sc(v);
-        u--;v--;
-        add_edge(i, u, v);
+        int u, v, w;
+        sc(u);sc(v);sc(w);
+        es[i].u = u, es[i].v = v, es[i].w = w;
+        sum += es[i].w;
     }
-    double ans = zhuliu(0);
-    if(fabs(ans - INF) < eps){
-        printf("poor snoopy\n");
+    for(int i = 0; i < n; i++){
+        es[i + m].u = n;
+        es[i + m].v = i;
+        es[i + m].w = sum;
     }
-    else printf("%.2f\n", ans);
+    ll ans = zhuliu(n, n + 1, n + m);
+    if(ans == -1 || ans - sum >= sum)printf("impossible\n\n");
+    else printf("%lld %d\n\n", ans - sum, minroot - m);
 }
-
 
 int main()
 {

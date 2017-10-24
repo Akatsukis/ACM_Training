@@ -48,74 +48,58 @@ const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
 int n, m;
 vector<int> v[100100];
-set<int> st;
+set<int> in;
+set<int> out;
 
 bool solve(int x, int y)
 {
-    int i;
-    for(i = x; i < n - 1; i++){
-        int len = min(v[i].size(), v[i + 1].size());
-        int j = (i == x ? y : 0);
-        for(; j < len; j++){
-            if(!st.count(v[i][j]) && !st.count(v[i + 1][j])){
-                if(v[i][j] > v[i + 1][j]){
-                    st.insert(v[i][j]);
-                    return solve(i, j + 1);
+    for(int i = x; i < n - 1; i++){
+        int j = i == x ? y : 0;
+        int sz = min(v[i].size(), v[i + 1].size());
+        for(; j < sz; j++){
+            if(in.find(v[i][j]) != in.end() && in.find(v[i + 1][j]) != in.end()){
+                if(v[i][j] < v[i + 1][j])return solve(x + 1, 0);
+                else if(v[i][j] > v[i + 1][j]){
+                    return false;
                 }
-                else if(v[i][j] < v[i + 1][j])break;
             }
-            else if(st.count(v[i][j]) && st.count(v[i + 1][j])){
-                if(v[i][j] > v[i + 1][j])return 0;
-                else if(v[i][j] < v[i + 1][j])break;
+            else if(in.find(v[i][j]) != in.end() && in.find(v[i + 1][j]) == in.end()){
+                return solve(x + 1, 0);
             }
-            else if(!st.count(v[i][j]) && st.count(v[i + 1][j])){
-                st.insert(v[i][j]);
-                if(v[i][j] > v[i + 1][j])return 0;
-                else return solve(i, j + 1);
-            }
-            else if(st.count(v[i][j]) && !st.count(v[i + 1][j]))break;
-        }
-    }
-    if(i == n - 1){
-        for(int i = 0; i < n - 1; i++){
-            int j = 0, len = min(v[i].size(), v[i + 1].size());
-            for(; j < len; j++){
-                if(!st.count(v[i][j]) && !st.count(v[i + 1][j])){
-                    if(v[i][j] > v[i + 1][j]){
-                        return 0;
+            else if(in.find(v[i][j]) == in.end() && in.find(v[i + 1][j]) != in.end()){
+                if(v[i][j] > v[i + 1][j])return false;
+                else if(v[i][j] < v[i + 1][j]){
+                    if(out.find(v[i][j]) != out.end())return false;
+                    else{
+                        in.insert(v[i][j]);
+                        return solve(x + 1, 0);
                     }
-                    else if(v[i][j] < v[i + 1][j])break;
                 }
-                else if(st.count(v[i][j]) && st.count(v[i + 1][j])){
-                    if(v[i][j] > v[i + 1][j]){
-                        return 0;
+            }
+            else if(in.find(v[i][j]) == in.end() && in.find(v[i + 1][j]) == in.end() ){
+                if(v[i][j] < v[i + 1][j]){
+                    out.insert(v[i][j]);
+                    out.insert(v[i + 1][j]);
+                    if(solve(x + 1, 0))return true;
+                    else{
+                        out.erase(v[i][j]);
+                        out.erase(v[i + 1][j]);
+                        in.insert(v[i][j]);
+                        in.insert(v[i + 1][j]);
+                        return solve(x + 1, 0);
                     }
-                    else if(v[i][j] < v[i + 1][j])break;
                 }
-                else if(!st.count(v[i][j]) && st.count(v[i + 1][j])){
-                    return 0;
+                else if(v[i][j] > v[i + 1][j]){
+                    if(out.find(v[i][j]) != out.end())return 0;
+                    else in.insert(v[i][j]);
+                    out.insert(v[i + 1][j]);
+                    return solve(x + 1, 0);
                 }
-                else if(st.count(v[i][j]) && !st.count(v[i + 1][j]))break;
-            }
-            if(j == len && v[i].size() > v[i + 1].size()){
-                return 0;
             }
         }
-        return 1;
+        if(j == sz && v[i].size() > v[i + 1].size())return 0;
     }
-    for(i = x; i < n - 1; i++){
-        int len = min(v[i].size(), v[i + 1].size());
-        int j = (i == x ? y : 0);
-        for(; j < len; j++){
-            if(!st.count(v[i][j])){
-                st.insert(v[i][j]);
-                if(solve(i, j + 1))return 1;
-                else st.erase(v[i][j]);
-            }
-            else if(solve(i, j + 1))return 1;
-        }
-    }
-    return 0;
+    return true;
 }
 
 int main()
@@ -132,8 +116,8 @@ int main()
     }
     if(solve(0, 0)){
         printf("Yes\n");
-        printf("%d\n", (int)st.size());
-        for(auto i = st.begin(); i != st.end(); i++){
+        printf("%d\n", (int)in.size());
+        for(auto i = in.begin(); i != in.end(); i++){
             printf("%d ", *i);
         }
         printf("\n");
