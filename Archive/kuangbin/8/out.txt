@@ -1,4 +1,0 @@
-Case #1: 10
-Case #2: Possums!
-Case #3: 40
-Case #4: 130
