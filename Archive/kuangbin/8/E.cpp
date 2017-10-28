@@ -47,7 +47,7 @@ const ll INF64 = 1223372036854775807;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
 const int maxn = 100 + 10;
-const int maxm = 2000 + 10;
+const int maxm = 2e4 + 10;
 struct edge
 {
     int u, v;
