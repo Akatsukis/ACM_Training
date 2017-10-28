@@ -42,40 +42,41 @@ using namespace std;
 #define PI M_PI
 #define debug cout<<"???"<<endl
 
-const ll mod = 100000073;
+const ll mod = 1e9+7;
 const int INF = 2e9+5;
 //int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 5e6+10;
-int f[maxn];
-int g[maxn];
-int p[maxn];
-int sum[maxn];
-
-void init()
-{
-    for(int i = 0, cnt = 0; i < maxn; i++){
-        if((ll)cnt*(cnt+1)/2 < i)p[++cnt] = i;
-        f[i] = cnt;
-    }
-    sum[0] = 1, sum[1] = 2, g[1] = 1;
-    for(int i = 2; i < maxn; i++){
-        int u = i - f[i], v = p[f[i]] - 1;
-        //printf("i=%d u=%d v=%d\n", i, u, v);
-        g[i] = (sum[v]-sum[u-1]+mod)%mod;
-        sum[i] = (sum[i-1]+g[i])%mod;
-    }
-}
+const int maxs = 5e6 + 10;
+bitset<1000> ans, b[10];
+char s[maxs];
 
 int main()
 {
-    init();
-    int l, r;
-    while(scanf("%d%d", &l, &r) != EOF){
-        printf("%d %d\n", f[r-l+1], g[r-l+1]);
+    int n;
+    sc(n);
+    for(int i = 0; i < n; i++){
+        int k;
+        sc(k);
+        for(int j = 0; j < k; j++){
+            int t;
+            sc(t);
+            b[t][i] = 1;
+        }
+    }
+    getchar();
+    gets(s);
+    int len = strlen(s);
+    for(int i = 0; i < len; i++){
+        ans <<= 1;
+        ans[0] = 1;
+        ans &= b[s[i]-'0'];
+        if(ans[n-1]){
+            char ch = s[i+1];
+            s[i+1] = 0;
+            puts(s+i-n+1);
+            s[i+1] = ch;
+        }
     }
     return 0;
 }
-
-
