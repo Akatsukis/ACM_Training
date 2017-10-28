@@ -47,24 +47,29 @@ const int INF = 2e9+5;
 //int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 5e5 + 10;
-const int maxk = 10+1;
+const int maxn = 5e4 + 10;
+const int maxk = 10;
 int n, k;
+int col[maxn];
 struct edge
 {
     int u, v, next;
-}es[maxn * 2];
-int col[maxn];
+}es[maxn*2];
+int head[maxn];
 bool vis[maxn];
 int size[maxn];
 int maxv[maxn];
 int sta[maxn];
-int head[maxn];
 ll Hash[(1<<maxk)];
-int Max, root, num;
+int root, num, Max;
 ll ans;
 
-
+void init()
+{
+    memset(head, 0, sizeof(head));
+    memset(vis, 0, sizeof(vis));
+    ans = 0;
+}
 
 void addedge(int i, int u, int v)
 {
@@ -72,13 +77,6 @@ void addedge(int i, int u, int v)
     head[u] = i*2+1;
     es[i*2+2].u = v, es[i*2+2].v = u, es[i*2+2].next = head[v];
     head[v] = i*2+2;
-}
-
-void init()
-{
-    memset(vis, 0, sizeof(vis));
-    memset(head, 0, sizeof(head));
-    ans = 0;
 }
 
 void dfs_size(int u, int f)
@@ -90,15 +88,18 @@ void dfs_size(int u, int f)
         if(v != f && !vis[v]){
             dfs_size(v, u);
             size[u] += size[v];
-            if(size[v] > maxv[u])maxv[u] = size[v];
+            maxv[u] = max(maxv[u], size[v]);
         }
     }
 }
 
-void dfs_root(int r, int u, int f)
+void dfs_root(int r,int u, int f)
 {
-    if(size[r] - size[u] > maxv[u])maxv[u] = size[r] - size[u];
-    if(maxv[u] < Max)Max = maxv[u], root = u;
+    maxv[u] = max(maxv[u], size[r] - size[u]);
+    if(Max > maxv[u]){
+        Max = maxv[u];
+        root = u;
+    }
     for(int i = head[u]; i; i = es[i].next){
         int v = es[i].v;
         if(v != f && !vis[v]){
@@ -107,13 +108,13 @@ void dfs_root(int r, int u, int f)
     }
 }
 
-void dfs_sta(int u, int d, int f)
+void dfs_sta(int u, int f, int d)
 {
     sta[num++] = d;
     for(int i = head[u]; i; i = es[i].next){
-        int v  = es[i].v;
+        int v = es[i].v;
         if(v != f && !vis[v]){
-            dfs_sta(v, d | (1<<col[v]), u);
+            dfs_sta(v, u, d|(1<<col[v]));
         }
     }
 }
@@ -122,19 +123,19 @@ ll calc(int u, int d)
 {
     ll res = 0;
     num = 0;
-    dfs_sta(u, d, 0);
+    dfs_sta(u, 0, d);
     memset(Hash, 0, sizeof(Hash));
     for(int i = 0; i < num; i++)Hash[sta[i]]++;
     for(int i = 0; i < num; i++){
         Hash[sta[i]]--;
-        res += Hash[(1 << k) - 1];
-        //printf("res=%d\n", res);
+        //printf("Hash=%d\n", Hash[sta[i]]);
+        res += Hash[(1<<k)-1];
         for(int s0 = sta[i]; s0; s0 = (s0-1)&sta[i]){
             res += Hash[((1<<k)-1)^s0];
         }
         Hash[sta[i]]++;
     }
-    //printf("res=%d\n", res);
+    //printf("res=%lld\n", res);
     return res;
 }
 
@@ -143,19 +144,22 @@ void dfs(int u)
     Max = n;
     dfs_size(u, 0);
     dfs_root(u, u, 0);
-    //printf("root=%d\n", root);
     ans += calc(root, (1<<col[root]));
-    //printf("ans=%d\n", ans);
     vis[root] = 1;
-    for(int i = root; i; i = es[i].next){
+    //printf("root=%d\n", root);
+    int rt = root;
+    for(int i = head[rt]; i; i = es[i].next){
         int v = es[i].v;
         if(!vis[v]){
-            ans -= calc(v, (1<<col[root])|(1<<col[v]));
-            //printf("ans=%d\n", ans);
+            ans -= calc(v, ((1<<col[rt])|(1<<col[v])));
             dfs(v);
         }
     }
 }
+
+
+
+
 
 void work()
 {
@@ -170,12 +174,13 @@ void work()
         addedge(i, u, v);
     }
     if(k == 1){
-        printf("%lld\n", (ll)n * n);
+        printf("%lld\n", (ll)n*n);
         return;
     }
     dfs(1);
     printf("%lld\n", ans);
 }
+
 
 int main()
 {
