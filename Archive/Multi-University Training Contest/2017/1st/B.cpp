@@ -96,10 +96,13 @@ void work()
     for(int i = 0; i < 26; i++){
         if(vis[i])cnt++;
     }
-    if(cnt == 26){
-        for(int i = 0; i < 26; i++){
+    if(ban[a[0].ch]){
+        for(int i = 1; i < 26; i++){
             if(!ban[a[i].ch]){
-                swap(a[i], a[25]);
+                for(int j = i; j - 1 >= 0; j--){
+                    swap(a[j], a[j - 1]);
+                }
+                break;
             }
         }
     }
@@ -125,5 +128,3 @@ int main()
     }
     return 0;
 }
-
-
