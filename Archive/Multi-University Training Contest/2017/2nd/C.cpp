@@ -47,75 +47,43 @@ const int INF = 2e9+5;
 //int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 2e5 + 10;
-int n, kase;
-vector<vector<int> >G(maxn);
-bool vis[maxn];
-int sum[maxn];
-int size[maxn];
-int col[maxn];
-int cnt;
-ll ans;
-
-
-void init()
-{
-    cnt = 0;
-    memset(vis, 0 ,sizeof(vis));
-    memset(sum, 0, sizeof(sum));
-}
-
-
-void dfs(int u, int f)
-{
-    size[u] = 1;
-    int allson = 0;
-    for(int i = 0; i < (int)G[u].size(); i++){
-        int v = G[u][i];
-        if(v == f)continue;
-        int pre = sum[col[u]];
-        dfs(v, u);
-        size[u] += size[v];
-        ll tmp = sum[col[u]] - pre;//以v节点为根的颜色为col[u]的子树的大小的和
-        //size[v]-tmp表示以v为根不含col[u]的联通块的大小
-        ans -= (ll)(size[v] - tmp) * (ll)(size[v] - tmp - 1) / 2;
-        allson += size[v] - tmp;//计算以u为根的颜色不为col[u]的联通块的大小的和
-    }
-    sum[col[u]] += allson + 1;//加上不为col[u]的联通块的大小和自己，因为颜色为col[u]的子树已计算
-
-}
-
+const int maxn = 3e5+10;
+int a[maxn];
+int b[maxn];
+int mx[maxn];
+int n, ans;
+priority_queue<int> pq;
 
 void work()
 {
-    init();
+    ans = 0;
     for(int i = 1; i <= n; i++){
-        sc(col[i]);
-        G[i].clear();
-        if(!vis[col[i]]){
-            vis[col[i]] = 1;
-            cnt++;
-        }
+        sc(a[i]);
+        a[i] -= i;
     }
-    for(int i = 0; i < n - 1; i++){
-        int u, v;
-        sc(u);sc(v);
-        G[u].pb(v);
-        G[v].pb(u);
-    }
-    ans = (ll)n * (n - 1) / 2 * cnt;
-    dfs(1, -1);
     for(int i = 1; i <= n; i++){
-        if(!sum[i])continue;
-        ll tmp = n - sum[i];//递归计算时没有计算dfs(1)的贡献，需计算最顶层的联通块的贡献
-        ans -= tmp * (tmp - 1) / 2;
+        sc(b[i]);
     }
-    printf("Case #%d: %lld\n", kase++, ans);
+    mx[n] = a[n];
+    for(int i = n - 1; i >= 1; i--){
+        mx[i] = max(mx[i + 1], a[i]);
+    }
+    for(int i = 1; i <= n; i++){
+        pq.push(mx[b[i]]);
+    }
+    int an1 = pq.top();pq.pop();
+    ans += an1;
+    an1 -= n + 1;
+    for(int i = 2; i <= n; i++){
+        int now = pq.top();pq.pop();
+        now = max(now, an1);
+        ans = (ans + now) % mod;
+    }
+    printf("%d\n", ans);
 }
 
 int main()
 {
-    kase = 1;
     while(scanf("%d", &n) != EOF){
         work();
     }

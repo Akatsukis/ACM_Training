@@ -47,68 +47,60 @@ const int INF = 2e9+5;
 //int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 2e5 + 10;
-int n, kase;
-vector<vector<int> >G(maxn);
+const int maxn = 1e5 + 10;
+int n, m;
 bool vis[maxn];
-int sum[maxn];
-int size[maxn];
-int col[maxn];
-int cnt;
-ll ans;
+int a[maxn][2];
+vector<int> v;
+map<int, int> mp;
+int kase;
 
+void dfs(int u, int d, int t)
+{
+    //printf("dfs(%d,%d,%d)\n", u, d, t);
+    if(vis[u]){
+        if(t == 0)v.pb(d);
+        else mp[d] += d;
+        return;
+    }
+    else{
+        vis[u] = 1;
+        dfs(a[u][t], d + 1, t);
+    }
+}
 
 void init()
 {
-    cnt = 0;
-    memset(vis, 0 ,sizeof(vis));
-    memset(sum, 0, sizeof(sum));
+    mp.clear();
+    v.clear();
 }
-
-
-void dfs(int u, int f)
-{
-    size[u] = 1;
-    int allson = 0;
-    for(int i = 0; i < (int)G[u].size(); i++){
-        int v = G[u][i];
-        if(v == f)continue;
-        int pre = sum[col[u]];
-        dfs(v, u);
-        size[u] += size[v];
-        ll tmp = sum[col[u]] - pre;//以v节点为根的颜色为col[u]的子树的大小的和
-        //size[v]-tmp表示以v为根不含col[u]的联通块的大小
-        ans -= (ll)(size[v] - tmp) * (ll)(size[v] - tmp - 1) / 2;
-        allson += size[v] - tmp;//计算以u为根的颜色不为col[u]的联通块的大小的和
-    }
-    sum[col[u]] += allson + 1;//加上不为col[u]的联通块的大小和自己，因为颜色为col[u]的子树已计算
-
-}
-
 
 void work()
 {
     init();
-    for(int i = 1; i <= n; i++){
-        sc(col[i]);
-        G[i].clear();
-        if(!vis[col[i]]){
-            vis[col[i]] = 1;
-            cnt++;
+    for(int i = 0; i < n; i++){
+        sc(a[i][0]);
+    }
+    for(int i = 0; i < m; i++){
+        sc(a[i][1]);
+    }
+    memset(vis, 0, sizeof(vis));
+    for(int i = 0; i < n; i++){
+        if(!vis[i])dfs(i, 0, 0);
+    }
+    memset(vis, 0, sizeof(vis));
+    for(int i = 0; i < m; i++){
+        if(!vis[i])dfs(i, 0, 1);
+    }
+    ll ans = 1;
+    for(int i = 0; i < (int)v.size(); i++){
+        ll tmp = 0;
+        for(auto j = mp.begin(); j != mp.end(); j++){
+            if(v[i] % j->fi == 0){
+                tmp += j->se;
+            }
         }
-    }
-    for(int i = 0; i < n - 1; i++){
-        int u, v;
-        sc(u);sc(v);
-        G[u].pb(v);
-        G[v].pb(u);
-    }
-    ans = (ll)n * (n - 1) / 2 * cnt;
-    dfs(1, -1);
-    for(int i = 1; i <= n; i++){
-        if(!sum[i])continue;
-        ll tmp = n - sum[i];//递归计算时没有计算dfs(1)的贡献，需计算最顶层的联通块的贡献
-        ans -= tmp * (tmp - 1) / 2;
+        ans *= tmp;
     }
     printf("Case #%d: %lld\n", kase++, ans);
 }
@@ -116,7 +108,7 @@ void work()
 int main()
 {
     kase = 1;
-    while(scanf("%d", &n) != EOF){
+    while(scanf("%d%d", &n, &m) != EOF){
         work();
     }
     return 0;
