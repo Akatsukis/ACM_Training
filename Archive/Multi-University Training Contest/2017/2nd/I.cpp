@@ -47,20 +47,21 @@ const int INF = 2e9+5;
 //int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 1e5+10;
+const int maxn = 2e5;
 int n;
 int a[maxn];
 int num[maxn];
 int pre[maxn];
 int prime[10000];
 bool vis[maxn];
+int cnt[maxn];
 
 void init()
 {
-    int cnt = 0;
+    int cur = 0;
     for(int i = 2; i < maxn; i++){
         if(!vis[i]){
-            prime[cnt++] = i;
+            prime[cur++] = i;
             for(int j = i*2; j < maxn; j += i){
                 vis[j] = 1;
             }
@@ -68,19 +69,69 @@ void init()
     }
 }
 
+ll quick(ll b, int m)
+{
+    ll res = 1;
+    while(m){
+        if(m&1)res = (res * b) % mod;
+        b = b*b%mod;
+        m >>= 1;
+    }
+    return res;
+}
+
+ll cal(int t, int mx)
+{
+    ll res = 1;
+    for(int i = t, j = 1; i <= mx; i += t, j++){
+        int cur = pre[i+t-1] - pre[i-1];
+        if(cur){
+            res *= quick(j, cur);
+            res %= mod;
+            //printf("%d %d\n", j, cur);
+        }
+        //printf("res:%lld\n", res);
+        //printf("pre[%d]-pre[%d]=%d\n", i+t-1, i-1, pre[i+t-1]-pre[i-1]);
+    }
+    return res % mod;
+}
+
 int main()
 {
+#ifdef Akatsuki
+    frein;
+    freout;
+#endif
     init();
-    int T;
+    int T, kase = 1;
     sc(T);
     while(T--){
+        memset(cnt, 0, sizeof(cnt));
+        memset(pre, 0, sizeof(pre));
+        memset(num, 0, sizeof(num));
         sc(n);
+        int mn = INF, mx = 0;
         for(int i = 0; i < n; i++){
             sc(a[i]);
             num[a[i]]++;
+            mn = min(mn, a[i]);
+            mx = max(mx, a[i]);
         }
-        for(int i = 1; i <= n; i++)pre[i] = pre[i - 1] + num[i];
-
+        for(int i = 1; i < maxn; i++)pre[i] = pre[i - 1] + num[i];
+        ll ans = 0;
+        for(int i = 2; i <= mn; i++){
+            //printf("cnt[%d]:%d\n", i, cnt[i]);
+            if(cnt[i] != 1){
+                ll tmp = cal(i, mx);
+                int tb = 1 - cnt[i];
+                ans += tmp * tb;
+                ans = (ans+mod)%mod;
+                for(int j = i; j <= mn; j += i){
+                    cnt[j] += tb;
+                }
+            }
+        }
+        printf("Case #%d: %lld\n", kase++, ans);
     }
     return 0;
 }
