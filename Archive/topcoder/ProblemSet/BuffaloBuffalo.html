@@ -1,0 +1,22 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td>Did you know that "Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo." is a grammatically correct sentence in American English?
+<br></br>
+<br></br>
+In this problem we call a string good if it satisfies the following constraints:
+<br></br>
+
+<ul>
+<li>The string contains one or more words.</li>
+<li>Each word in the string is "buffalo".</li>
+<li>Each pair of consecutive words is separated by exactly one space.</li>
+<li>There are no spaces at the beginning of the string.</li>
+<li>There are no spaces at the end of the string.</li>
+</ul>
+
+For example, the strings "buffalo", "buffalo buffalo" and "buffalo buffalo buffalo" are good but " buffalo", "buffalobuffalo", "buff alo", and "cow" are not.
+<br></br>
+<br></br>
+
+You are given a string <b>s</b> that consists of spaces and lowercase letters.
+Return "Good" if <b>s</b> is a good string.
+Otherwise, return "Not good".
+(Note that the return value is case-sensitive.)</td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>BuffaloBuffalo</td></tr><tr><td>Method:</td><td>check</td></tr><tr><td>Parameters:</td><td>string</td></tr><tr><td>Returns:</td><td>string</td></tr><tr><td>Method signature:</td><td>string check(string s)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td colspan="2"><h3>Limits</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Time limit (s):</td><td>2.000</td></tr><tr><td>Memory limit (MB):</td><td>256</td></tr><tr><td>Stack limit (MB):</td><td>256</td></tr></table></td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>s</b> will contain between 1 and 1,000 characters, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each character in <b>s</b> will be a lowercase English letter ('a' - 'z') or a space (' ').</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;buffalo buffalo&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: &quot;Good&quot;</pre></td></tr><tr><td><table><tr><td colspan="2">This is a good sentence contains two 'buffalo'.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;buffalobuffalo&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: &quot;Not good&quot;</pre></td></tr><tr><td><table><tr><td colspan="2">There must be exactly one space between two words.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;buffalo buffalo buffalo&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: &quot;Good&quot;</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;buf falo buffalo&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: &quot;Not good&quot;</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;cow&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: &quot;Not good&quot;</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">5)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;buffalo  buffalo&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: &quot;Not good&quot;</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>

@@ -1,0 +1,51 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td>A tournament is being played.
+There are n participants, numbered 0 through n-1.
+The tournament is a single round-robin tournament.
+In other words, each player is supposed to play each other player exactly once.
+There are no ties, each match will be won by one of the two players.
+<br></br>
+<br></br>
+Some games may have already been played.
+You are given the information about the current state of the tournament in the vector &lt;string&gt; <b>G</b>.
+For each x and y, if x won the game against y, we have <b>G</b>[x][y] = 'W' and <b>G</b>[y][x] = 'L'.
+For the games that haven't been played yet we have <b>G</b>[x][y] = <b>G</b>[y][x] = '?'.
+<br></br>
+<br></br>
+The winning rate of a player is the percentage of games they won.
+In particular, at the end of the tournament the winning rate of a player can be computed as the number of games they won divided by n-1.
+<br></br>
+<br></br>
+The variance of a sequence is the average square distance of an element of the sequence from the mean of the sequence.
+Formally, suppose you have a sequence s[0], ..., s[n-1].
+Then:
+<ul>
+<li>The mean of this sequence is mu(s) = ( s[0] + ... + s[n-1] ) / n.</li>
+<li>The variance of this sequence is var(s) = ( (s[0]-mu(s))^2 + ... + (s[n-1]-mu(s))^2 ) / n.</li>
+</ul>
+<br></br>
+Let r[0], ..., r[n-1] be the sequence of the winning rates of our n players at the end of the tournament.
+Fill in the results of the remaining matches in a way that maximizes the variance of r.
+Return the maximal possible value of var(r).</td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>UnfinishedTournamentEasy</td></tr><tr><td>Method:</td><td>maximal</td></tr><tr><td>Parameters:</td><td>vector &lt;string&gt;</td></tr><tr><td>Returns:</td><td>double</td></tr><tr><td>Method signature:</td><td>double maximal(vector &lt;string&gt; G)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td colspan="2"><h3>Limits</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Time limit (s):</td><td>2.000</td></tr><tr><td>Memory limit (MB):</td><td>256</td></tr><tr><td>Stack limit (MB):</td><td>256</td></tr></table></td></tr><tr><td colspan="2"><h3>Notes</h3></td></tr><tr><td align="center" valign="top">-</td><td>Your answer will be considered correct if its absolute or relative error does not exceed 10^(-9).</td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td>n will be between 2 and 20, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td><b>G</b> will contain exactly n elements.</td></tr><tr><td align="center" valign="top">-</td><td>Each element in <b>G</b> will contain exactly n characters.</td></tr><tr><td align="center" valign="top">-</td><td>Each character in <b>G</b> will be one of {'W', 'L', '?', '-'}.</td></tr><tr><td align="center" valign="top">-</td><td>For each i, <b>G</b>[i][i] = '-'.</td></tr><tr><td align="center" valign="top">-</td><td>For each i != j: {<b>G</b>[i][j], <b>G</b>[j][i]} = {'W', 'L'} or <b>G</b>[i][j] = <b>G</b>[j][i] = '?'.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;-??&quot;,
+ &quot;?-?&quot;,
+ &quot;??-&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 0.16666666666666669</pre></td></tr><tr><td><table><tr><td colspan="2">One of the optimal solutions is the following tournament:
+<pre>
+-WW
+L-W
+LL-
+</pre>
+For this tournament the winning rates of the three players are {1, 0.5, 0}.
+Thus, the mean is 0.5 and the variance is ((1-0.5)^2 + (0.5-0.5)^2 + (0-0.5)^2) / 3 = 0.5 / 3 = 0.16667.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;-WL&quot;,
+ &quot;L-W&quot;,
+ &quot;WL-&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 0.0</pre></td></tr><tr><td><table><tr><td colspan="2">This time all matches are finished. The winning rates are {0.5, 0.5, 0.5} thus the variance is 0.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;-WWL&quot;,
+ &quot;L-??&quot;,
+ &quot;L?-?&quot;,
+ &quot;W??-&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 0.1388888888888889</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;-WWL&quot;,
+ &quot;L-WW&quot;,
+ &quot;LL-?&quot;,
+ &quot;WL?-&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 0.08333333333333331</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;-?&quot;,
+ &quot;?-&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 0.25</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">5)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;-WWL?&quot;,
+&quot;L-L??&quot;,
+&quot;LW-?W&quot;,
+&quot;W??-L&quot;,
+&quot;??LW-&quot;}
+</pre></td></tr></table></td></tr><tr><td><pre>Returns: 0.07500000000000001</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>
