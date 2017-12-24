@@ -20,22 +20,40 @@ const ll mod = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
+vector<int> l, r;
+string s, t;
+int del[2000];
+
+void solve(int x)
+{
+    int now = 1;
+    for(int i = x+1; i < (int)s.size(); i++){
+        if(s[i] == '(' && !del[i]){
+            del[i] = 1;
+            now++;
+            solve(i);
+        }
+        if(s[i] == ')')now--;
+        if(!now){
+            reverse(t.begin()+x+1, t.begin()+i);
+            break;
+        }
+    }
+}
 
 int main()
 {
-    int v1, v2, v3, vm;
-    scanf("%d%d%d%d", &v1, &v2, &v3, &vm);
-    for(int i = 1; i <= 300; i++){
-        for(int j = i+1; j <= 300; j++){
-            for(int  k= j+1; k <= 300; k++){
-                if(v1 <= k && v1*2 >=k && v2 <= j && v2*2 >= j &&v3 <= i && v3*2 >= i && vm <= i && vm*2 >= i && vm*2 < j){
-                    printf("%d\n%d\n%d\n", k, j, i);
-                    return 0;
-                }
-            }
+    cin >> s;
+    t = s;
+    for(int i = 0; i < (int)s.size(); i++){
+        if(s[i] == '(' && !del[i]){
+            solve(i);
         }
     }
-    printf("-1\n");
+    for(int i = 0; i < (int)t.size(); i++){
+        if(t[i] != '(' && t[i] != ')')printf("%c", t[i]);
+    }
+    printf("\n");
     return 0;
 }
 
