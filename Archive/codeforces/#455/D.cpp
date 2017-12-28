@@ -25,13 +25,19 @@ char s[maxn];
 int pre[maxn];
 int nxt[maxn];
 int n;
-set<int> st;
-set<int> tmp;
+set<int> st[2];
+int p, q;
 
 void del(int x)
 {
     pre[nxt[x]] = pre[x];
     nxt[pre[x]] = nxt[x];
+}
+
+void Insert(int x)
+{
+    if(x == 0 || x == n+1)return;
+    if((pre[x]!=0&&s[x]!=s[pre[x]])||(nxt[x]!=n+1&&s[x]!=s[nxt[x]]))st[q].insert(x);
 }
 
 int main()
@@ -40,8 +46,8 @@ int main()
     n = strlen(s+1);
     for(int i = 1; i < n; i++){
         if(s[i] != s[i+1]){
-            st.insert(i);
-            st.insert(i+1);
+            st[0].insert(i);
+            st[0].insert(i+1);
         }
     }
     for(int i = 1; i <= n; i++){
@@ -49,28 +55,21 @@ int main()
         nxt[i] = i+1;
     }
     int ans = 0;
-    while(st.size()){
+    p = 0, q = 1;
+    while(st[p].size()){
         ans++;
-        tmp.clear();
-        for(auto it = st.begin(); it != st.end(); it++){
+        st[q].clear();
+        for(auto it = st[p].begin(); it != st[p].end(); it++){
             int u = *it;
             int l = pre[u], r = nxt[u];
-            if(tmp.count(u))tmp.erase(u);
-            if(tmp.count(l))tmp.erase(l);
-            if(tmp.count(r))tmp.erase(r);
+            if(st[q].count(u))st[q].erase(u);
+            if(st[q].count(l))st[q].erase(l);
+            if(st[q].count(r))st[q].erase(r);
             del(u);
-            if(l != 0 && l != n+1){
-                if((pre[l]!=0&&s[l]!=s[pre[l]]) || (nxt[l]!=n+1&&s[l]!=s[nxt[l]])){
-                    tmp.insert(l);
-                }
-            }
-            if(r != 0 && r != n+1){
-                if((pre[r]!=0&&s[r]!=s[pre[r]]) || (nxt[r]!=n+1&&s[r]!=s[nxt[r]])){
-                    tmp.insert(r);
-                }
-            }
+            Insert(l);
+            Insert(r);
         }
-        st = tmp;
+        swap(p, q);
     }
     printf("%d\n", ans);
     return 0;
