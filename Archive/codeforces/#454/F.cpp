@@ -16,63 +16,71 @@ using namespace std;
 #define freout freopen("out.txt", "w", stdout)
 #define debug cout<<"???"<<endl
 
-const ll mod = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 100;
-bool vis[maxn*maxn];
-int ans[maxn][maxn];
-bool flag;
+const int maxn = 1e6+10;
+int n, m;
+int phi[maxn];
+int a[maxn];
 
-void dfs(int x, int y, int n, int m)
+int get(int x)
 {
-    if(flag)return;
-    for(int i = 1; i <= n*m; i++){
-        if(!vis[i] && ans[x-1][y] != i && ans[x][y-1] != i){
-            ans[x][y] = 1;
-            vis[i] = 1;
-            if(x == n && y == m){
-                flag = 1;
-                return;
-            }
-            else if(x == n){
-                dfs(1, y+1, n, m);
-            }
-            else dfs(x+1, y, n, m);
-            if(flag)return;
-            ans[x][y] = 0;
-            vis[i] = 0;
+    int res = x;
+    for(ll i = 2; i*i <= x; i++){
+        if(x%i == 0){
+            res = res/i*(i-1);
+            while(x%i==0)x/=i;
         }
     }
+    if(x>1)res = res/x*(x-1);
+    return res;
 }
 
-void solve(int n, int m)
+int qpow(int b, int n, int k)
 {
-    flag = 0;
-    memset(ans, 0, sizeof(ans));
-    memset(vis, 0, sizeof(vis));
-    dfs(1, 1, n, m);
-    printf("n=%d m=%d\n", n, m);
-    if(flag){
-        for(int i = 1; i <= n; i++){
-            for(int j = 1; j <= m; j++){
-                printf("%d%c", ans[i][j], j == m ? '\n' : ' ');
-            }
-        }
+    int res = 1;
+    while(n){
+        if(n&1)res=1LL*res*b>=phi[k]?1LL*res*b%phi[k]+phi[k]:res*b;
+        b=1LL*b*b>=phi[k]?1LL*b*b%phi[k]+phi[k]:b*b;
+        n >>= 1;
     }
-    else{
-        printf("-1\n");
+    return res;
+}
+
+int solve(int l, int r, int k)
+{
+    //printf("l=%d r=%d k=%d\n", l, r, k);
+    if(phi[k] == 1)return 1;
+    if(l == r){
+        if(a[l]<phi[k])return a[l];
+        else return a[l]%phi[k]+phi[k];
     }
+    else return qpow(a[l], solve(l+1, r, k+1), k);
 }
 
 int main()
 {
-    for(int i = 1; i <= 10; i++){
-        for(int j = 1; j <= 10; j++){
-            solve(i, j);
-        }
+
+    sc(n);sc(phi[0]);
+    while(phi[m] != 1){
+        phi[m+1] = get(phi[m]);
+        //printf("phi[%d]:%d\n", m, phi[m]);
+        m++;
+    }
+    phi[m] = 1;
+    for(int i = 1; i <= n; i++){
+        sc(a[i]);
+    }
+    int q;
+    sc(q);
+    for(int i = 0; i < q; i++){
+        int l, r;
+        sc(l);sc(r);
+        int ans = solve(l, r, 0)%phi[0];
+        printf("%d\n", ans);
     }
     return 0;
 }
+
 
