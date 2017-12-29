@@ -20,27 +20,36 @@ const ll mod = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 1e5+10;
+const int maxn = 2e5+10;
 int a[maxn];
-vector<int> v;
+set<int> st[200];
+int n;
 
 int main()
 {
-    int n;
     sc(n);
-    int mn = INF;
-    for(int i = 0; i < n; i++){
+    for(int i = 1; i <= n; i++){
         sc(a[i]);
-        mn = min(a[i], mn);
+        st[a[i]].insert(i);
     }
-    for(int i = 0; i < n; i++){
-        if(a[i] == mn)v.pb(i);
+    int q;
+    sc(q);
+    for(int i = 0; i < q; i++){
+        int l, r, x, y;
+        sc(l);sc(r);sc(x);sc(y);
+        set<int>::iterator itl = lower_bound(st[x].begin(), st[x].end(), l);
+        set<int>::iterator itr = upper_bound(st[x].begin(), st[x].end(), r);
+        set_union(st[y].begin(), st[y].end(), itl, itr, inserter(st[y], st[y].begin()));
+        st[x].erase(itl, itr);
     }
-    int ans = INF;
-    for(int i = 0; i < (int)v.size()-1; i++){
-        ans = min(ans, v[i+1]-v[i]);
+    for(int i = 1; i <= 100; i++){
+        for(auto it = st[i].begin(); it != st[i].end(); it++){
+            a[*it] = i;
+        }
     }
-    printf("%d\n", ans);
+    for(int i = 1; i <= n; i++){
+        printf("%d%c", a[i], " \n"[i==n]);
+    }
     return 0;
 }
 

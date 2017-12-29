@@ -23,7 +23,15 @@ template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
 
 int main()
 {
-
+    int n, a, b;
+    sc(n);sc(a);sc(b);
+    int ans = 0;
+    for(int i = 1; i <= a+b; i++){
+        if(a/i+b/i<n)break;
+        ans = i;
+    }
+    ans = min(ans, min(a, b));
+    printf("%d\n", ans);
     return 0;
 }
 
