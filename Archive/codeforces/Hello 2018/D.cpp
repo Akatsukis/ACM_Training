@@ -20,31 +20,33 @@ const ll mod = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 2e5+10;
-const int maxa = 100+1;
-struct Node
+const int maxn = 3e5+10;
+pii p[maxn];
+priority_queue<pii> q;
+
+bool cmp(pii a, pii b)
 {
-    int val, tag;
-}tree[maxa][maxn*4];
-struct Task
-{
-    int l, r, x, y;
-};
-int a[maxn];
-int n;
+    if(a.se != b.se)return a.se < b.se;
+    return a.fi < b.fi;
+}
 
 int main()
 {
-    sc(n);
-    for(int i = 1; i <= n; i++){
-        sc(a[i]);
-        tree[a[i]][i] = i;
+    int n, T;
+    sc(n);sc(T);
+    for(int i = 0; i < n; i++){
+        sc(p[i].fi);sc(p[i].se);
     }
-    int q;
-    sc(q);
-    for(int i = 0; i < q; i++){
-        int l, r, x, y;
-        update()
+    sort(p, p + n, cmp);
+    int now = 0, ans = 0, tme = 0;
+    for(int i = 0; i < n;){
+        while(i < n && q.empty() || (q.top().fi < now && tme + p[i].se <= T){
+            now++;
+            q.push(p[i++]);
+            tme += p[i].se;
+        }
+        ans = max(ans, now);
+        if(q.empty)
     }
     return 0;
 }

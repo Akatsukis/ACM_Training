@@ -20,32 +20,32 @@ const ll mod = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 2e5+10;
-const int maxa = 100+1;
-struct Node
+const int maxn = 10;
+const int maxm = 200;
+struct data
 {
-    int val, tag;
-}tree[maxa][maxn*4];
-struct Task
-{
-    int l, r, x, y;
-};
-int a[maxn];
-int n;
+    double ex = 0;
+    double p[maxm];
+    bool operator <(const data&rbs)
+    {
+        return ex > rbs.ex;
+    }
+}v[maxn];
 
 int main()
 {
-    sc(n);
-    for(int i = 1; i <= n; i++){
-        sc(a[i]);
-        tree[a[i]][i] = i;
+    int n, m;
+    scanf("%d%d", &n, &m);
+    for(int i = 0; i < n; i++){
+        for(int j = 1; j <= m; j++){
+            double p;
+            scanf("%lf", &p);
+            v[i].p[j] = p;
+            v[i].ex += p*i;
+        }
     }
-    int q;
-    sc(q);
-    for(int i = 0; i < q; i++){
-        int l, r, x, y;
-        update()
-    }
+    sort(v, v + n);
+
     return 0;
 }
 

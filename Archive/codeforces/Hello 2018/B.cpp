@@ -20,32 +20,34 @@ const ll mod = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 2e5+10;
-const int maxa = 100+1;
-struct Node
+const int maxn = 1e5;
+vector<vector<int> > G(maxn);
+bool flag;
+
+void dfs(int u)
 {
-    int val, tag;
-}tree[maxa][maxn*4];
-struct Task
-{
-    int l, r, x, y;
-};
-int a[maxn];
-int n;
+    int cnt = 0;
+    for(int i = 0; i < (int)G[u].size(); i++){
+        int v = G[u][i];
+        if(G[v].size() == 0)cnt++;
+        else dfs(v);
+    }
+    if(G[u].size() && cnt < 3)flag = 0;
+}
 
 int main()
 {
+    int n;
     sc(n);
-    for(int i = 1; i <= n; i++){
-        sc(a[i]);
-        tree[a[i]][i] = i;
+    for(int i = 2; i <= n; i++){
+        int u;
+        sc(u);
+        G[u].pb(i);
     }
-    int q;
-    sc(q);
-    for(int i = 0; i < q; i++){
-        int l, r, x, y;
-        update()
-    }
+    flag = 1;
+    dfs(1);
+    if(flag)printf("Yes\n");
+    else printf("No\n");
     return 0;
 }
 
