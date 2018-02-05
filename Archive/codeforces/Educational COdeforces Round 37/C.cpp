@@ -22,7 +22,6 @@ const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
 const int maxn = 2e5+10;
 int num[maxn];
-pii p[maxn];
 char s[maxn];
 int sum[maxn];
 
@@ -32,22 +31,16 @@ int main()
     scanf("%d", &n);
     for(int i = 1; i <= n; i++){
         scanf("%d", &num[i]);
-        p[i].fi = num[i], p[i].se = i;
     }
     scanf("%s", s);
     for(int i = 1; i < n; i++){
         sum[i] = sum[i-1];
         if(s[i-1]=='1')sum[i]++;
     }
-    //for(int i = 1; i < n; i++){
-      //  printf("sum[%d]:%d\n", i, sum[i]);
-    //}
-    sort(p+1, p+n+1);
     bool flag = 1;
     for(int i = 1; i <= n; i++){
-        int l = i, r = p[i].se;
-        if(l>r)swap(l, r);
-        //printf("%d %d %d\n", p[i].fi, l, r);
+        int l = i, r = num[i];
+        if(l > r)swap(l, r);
         if(sum[r-1]-sum[l-1]!=r-l){
             flag = 0;
             break;
