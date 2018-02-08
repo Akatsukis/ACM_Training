@@ -19,37 +19,32 @@ const int INF = 0x3f3f3f3f;
 const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 1e5+10;
-string s[maxn];
-
-ll cal(string t)
-{
-    ll res = 0, cnt = 0;
-    for(auto &c:t){
-        if(c == 's')cnt++;
-        else res += cnt;
-    }
-    return res;
-}
-
-bool cmp(string a, string b)
-{
-    return cal(a+b)>cal(b+a);
-}
+const int maxn = 1e4+10;
+ll n, W, B, X;
+ll c[maxn];
+ll cost[maxn];
+ll dp[maxn];
 
 int main()
 {
-    int n;
-    sc(n);
+    scanf("%lld%lld%lld%lld", &n, &W, &B, &X);
+    for(int i = 0; i < n; i++)scanf("%lld", &c[i]);
+    for(int i = 0; i < n; i++)scanf("%lld", &cost[i]);
+    memset(dp, -1, sizeof(dp));
+    dp[0] = W;
     for(int i = 0; i < n; i++){
-        cin >> s[i];
+        for(int j = 0; j < c[i]; j++){
+            for(int k = maxn-1; k >= 1; k--){
+                if(dp[k-1] != -1)dp[k] = max(dp[k], dp[k-1]-cost[i]);
+            }
+        }
+        for(int j = maxn-1; j >= 1; j--){
+            if(dp[j] != -1)dp[j] = min(W+j*B, dp[j]+X);
+        }
     }
-    sort(s, s + n, cmp);
-    string t;
-    for(int i = 0; i < n; i++){
-        t += s[i];
+    for(int i = maxn-1; i >= 0; i--){
+        if(dp[i] != -1)return !printf("%d\n", i);
     }
-    printf("%lld\n", cal(t));
 	return 0;
 }
 
