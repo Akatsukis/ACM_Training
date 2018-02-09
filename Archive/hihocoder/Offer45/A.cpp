@@ -20,26 +20,20 @@ const ll mod = 1e9+7;
 const int INF = 0x3f3f3f3f;
 const double eps = 1e-6;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-int a[2000];
+map<int, ll> mp;
 
 int main()
 {
     int n;
     sc(n);
-    int ans = -INF;
+    ll ans = 0;
     for(int i = 0; i < n; i++){
-        sc(a[i]);
-        if(a[i] < 0){
-            ans = max(ans, a[i]);
-        }
-        else{
-            int tmp = sqrt(a[i]);
-            if(tmp*tmp!=a[i]){
-                ans = max(ans, a[i]);
-            }
-        }
+        int x, y;
+        sc(x);sc(y);
+        if(mp.count(y-x))ans += mp[y-x];
+        mp[x-y]++;
     }
-    printf("%d\n", ans);
+    printf("%lld\n", ans);
     return 0;
 }
 
