@@ -25,16 +25,10 @@ int main()
 {
     ll n, k;
     scanf("%lld%lld", &n, &k);
-    if(k>=1e7){
-        printf("No\n");
-        return 0;
-    }
+    if(k>=100)return !printf("No\n");
     for(int i = 1; i <= k; i++){
         int now = n%i;
-        if(st.count(now)){
-            printf("No\n");
-            return 0;
-        }
+        if(st.count(now))return !printf("No\n");
         else st.insert(now);
     }
     printf("Yes\n");

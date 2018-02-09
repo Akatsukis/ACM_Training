@@ -46,9 +46,7 @@ int main()
     }
     sort(s, s + n, cmp);
     string t;
-    for(int i = 0; i < n; i++){
-        t += s[i];
-    }
+    for(int i = 0; i < n; i++)t += s[i];
     printf("%lld\n", cal(t));
 	return 0;
 }

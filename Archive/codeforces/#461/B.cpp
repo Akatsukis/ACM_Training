@@ -28,10 +28,7 @@ int main()
     for(int i = 1; i <= n; i++){
         for(int j = i+1; j <= n; j++){
             int k = i^j;
-            if(k>i&&k>j&&k<i+j&&k<=n){
-                ans++;
-                //printf("%d %d %d\n", i, j, k);
-            }
+            if(k>i&&k>j&&k<i+j&&k<=n)ans++;
         }
     }
     printf("%lld\n", ans);
