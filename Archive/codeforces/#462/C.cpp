@@ -22,22 +22,25 @@ template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
 const int maxn = 2000+10;
 int a[maxn];
 int dp[maxn];
+int pre[maxn];
+int n;
 
 int main()
 {
-    int n;
     sc(n);
     for(int i = 1; i <= n; i++){
         sc(a[i]);
     }
     for(int i = 1; i <= n; i++){
-        if(a[i] == 2)dp[i] = dp[i-1]+1;
-        else{
-            int now = 1;
-            while(i-now>0&&a[i-now+1]<=a[i-now])now++;
-            dp[i] = max(dp[i-1], now+dp[i-now]);
+        if(a[i] == 1){
+            pre[i] = i;
+            dp[i] = dp[i-pre[i-1]] + i-pre[i-1];
         }
-        printf("dp[%d]=%d\n", i, dp[i]);
+        else{
+            pre[i] = pre[i-1];
+            dp[i] = dp[i-1] + 1;
+        }
+        printf("dp[%d]:%d, pre[%d]:%d\n", i, dp[i], i, pre[i]);
     }
     printf("%d\n", dp[n]);
     return 0;
