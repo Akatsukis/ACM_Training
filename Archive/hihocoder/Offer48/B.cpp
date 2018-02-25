@@ -19,32 +19,28 @@ const int INF = 0x3f3f3f3f;
 const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 2000+10;
-int a[maxn];
-int one[maxn];
 int n;
+int a[110];
 
-int main()
-{
+void solve(int l, int r)
+{   
+    if(l>r)return;
+    int mn = INF, pos = 0;
+    for(int i = l; i <= r; i++){
+        if(a[i] < mn){
+            mn = a[i];
+            pos = i;
+        }
+    }
+    printf("%d\n", mn);
+    solve(l, pos-1);
+    solve(pos+1, r);
+}
+
+
+int main(){
     sc(n);
     for(int i = 1; i <= n; i++)sc(a[i]);
-    int ans = 0;
-    for(int i = 1; i <= n; i++)one[i] = one[i-1]+(a[i]==1), ans = max(ans, one[i]);
-    for(int i = 1; i <= n; ){
-        if(a[i] == 2){
-            bool flag = 0;
-            int t = 0;
-            while(i+t <= n){
-                if(!flag && a[i+t] == 1)flag = 1;
-                else if(flag && a[i+t] == 2)break;
-                t++;
-            }
-            ans = max(ans, one[i-1]+t+(n-i-t+1)-(one[n]-one[i+t-1]));
-            i += t;
-        }
-        else i++;
-    }
-    printf("%d\n", ans);
-    return 0;
+    solve(1, n);
 }
 

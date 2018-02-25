@@ -19,32 +19,28 @@ const int INF = 0x3f3f3f3f;
 const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 2000+10;
-int a[maxn];
-int one[maxn];
-int n;
 
 int main()
 {
-    sc(n);
-    for(int i = 1; i <= n; i++)sc(a[i]);
-    int ans = 0;
-    for(int i = 1; i <= n; i++)one[i] = one[i-1]+(a[i]==1), ans = max(ans, one[i]);
-    for(int i = 1; i <= n; ){
-        if(a[i] == 2){
-            bool flag = 0;
-            int t = 0;
-            while(i+t <= n){
-                if(!flag && a[i+t] == 1)flag = 1;
-                else if(flag && a[i+t] == 2)break;
-                t++;
-            }
-            ans = max(ans, one[i-1]+t+(n-i-t+1)-(one[n]-one[i+t-1]));
-            i += t;
-        }
-        else i++;
+    ull n, k, a, b;
+    scanf("%llu%llu%llu%llu", &n, &k, &a, &b);
+    if(k == 1){
+        printf("%llu\n", a*(n-1));
+        return 0;
     }
-    printf("%d\n", ans);
+    ull ans = 0;
+    while(n > 1){
+        if(n%k==0){
+            ans += min(b, a*n/k*(k-1));
+            n /= k;
+        }
+        else{
+            if(n/k==0)ans += (n-1)*a, n = 1;
+            else ans += n%k*a, n = n/k*k;
+        }
+        //printf(">>n=%d, ans=%llu\n", n, ans);
+    }
+    printf("%llu\n", ans);
     return 0;
 }
 

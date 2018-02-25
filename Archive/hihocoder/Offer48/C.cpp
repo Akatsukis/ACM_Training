@@ -14,37 +14,43 @@ using namespace std;
 #define frein freopen("in.txt", "r", stdin)
 #define freout freopen("out.txt", "w", stdout)
 #define debug cout<<">>>STOP"<<endl
-const ll mod = 1000000007;
+const ll mod = 1000000009;
 const int INF = 0x3f3f3f3f;
 const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 2000+10;
-int a[maxn];
-int one[maxn];
-int n;
+const int maxn = 1e6+10;
+ll N, A, B;
+ll p[maxn];
+ll q[maxn];
+
+ll solve(int i)
+{
+    ll u = i, v = N-i;
+    if(u>A||v>B)return 0;
+    else return p[u]*q[v]%mod;
+}
+
+void init()
+{
+    p[0] = 1; q[0] = 1;
+    for(int i = 1; i <= A; i++){
+        p[i] = p[i-1]*(A-i+1)%mod;
+    }
+    for(int i = 1; i <= B; i++){
+        q[i] = q[i-1]*(B-i+1)%mod;
+    }
+}
 
 int main()
 {
-    sc(n);
-    for(int i = 1; i <= n; i++)sc(a[i]);
-    int ans = 0;
-    for(int i = 1; i <= n; i++)one[i] = one[i-1]+(a[i]==1), ans = max(ans, one[i]);
-    for(int i = 1; i <= n; ){
-        if(a[i] == 2){
-            bool flag = 0;
-            int t = 0;
-            while(i+t <= n){
-                if(!flag && a[i+t] == 1)flag = 1;
-                else if(flag && a[i+t] == 2)break;
-                t++;
-            }
-            ans = max(ans, one[i-1]+t+(n-i-t+1)-(one[n]-one[i+t-1]));
-            i += t;
-        }
-        else i++;
+    scanf("%lld%lld%lld", &N, &A, &B);
+    init();
+    ll ans = 0;
+    for(int i = 2; i <= N-1; i++){
+        ans = (ans+solve(i))%mod;
     }
-    printf("%d\n", ans);
+    printf("%lld\n", ans);
     return 0;
 }
 

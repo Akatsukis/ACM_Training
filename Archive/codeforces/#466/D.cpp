@@ -19,32 +19,28 @@ const int INF = 0x3f3f3f3f;
 const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 2000+10;
-int a[maxn];
-int one[maxn];
+const int maxn = 1e5+10;
 int n;
+int a[maxn];
+char s[maxn];
 
 int main()
 {
-    sc(n);
-    for(int i = 1; i <= n; i++)sc(a[i]);
-    int ans = 0;
-    for(int i = 1; i <= n; i++)one[i] = one[i-1]+(a[i]==1), ans = max(ans, one[i]);
-    for(int i = 1; i <= n; ){
-        if(a[i] == 2){
-            bool flag = 0;
-            int t = 0;
-            while(i+t <= n){
-                if(!flag && a[i+t] == 1)flag = 1;
-                else if(flag && a[i+t] == 2)break;
-                t++;
+    scanf("%d", &n);
+    for(int i = 0; i < n; i++)sc(a[i]);
+    scanf("%s", s);
+    int l = -1e9, r = 1e9;
+    for(int i = 4; i < n; i++){
+        if(s[i] != s[i-1]){
+            if(s[i] == '1'){
+                for(int j = i-4; j <= i; j++)l = max(l, a[j]+1);
             }
-            ans = max(ans, one[i-1]+t+(n-i-t+1)-(one[n]-one[i+t-1]));
-            i += t;
+            else{
+                for(int j = i-4; j <= i; j++)r = min(r, a[j]-1);
+            }
         }
-        else i++;
     }
-    printf("%d\n", ans);
+    printf("%d %d\n", l, r);
     return 0;
 }
 

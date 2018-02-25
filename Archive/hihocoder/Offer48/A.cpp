@@ -19,32 +19,40 @@ const int INF = 0x3f3f3f3f;
 const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 2000+10;
-int a[maxn];
-int one[maxn];
+const int maxn = 110;
 int n;
+double x[maxn];
+double y[maxn];
+
+double sqr(double t)
+{
+    return t*t;
+}
+
+double dis(int u, int v)
+{
+    return sqrt(sqr(x[u]-x[v])+sqr(y[u]-y[v]));
+}
 
 int main()
 {
     sc(n);
-    for(int i = 1; i <= n; i++)sc(a[i]);
-    int ans = 0;
-    for(int i = 1; i <= n; i++)one[i] = one[i-1]+(a[i]==1), ans = max(ans, one[i]);
-    for(int i = 1; i <= n; ){
-        if(a[i] == 2){
-            bool flag = 0;
-            int t = 0;
-            while(i+t <= n){
-                if(!flag && a[i+t] == 1)flag = 1;
-                else if(flag && a[i+t] == 2)break;
-                t++;
-            }
-            ans = max(ans, one[i-1]+t+(n-i-t+1)-(one[n]-one[i+t-1]));
-            i += t;
-        }
-        else i++;
+    double tot = 0;
+    for(int i = 0; i < n; i++){
+        scanf("%lf%lf", &x[i], &y[i]);
+        if(i)tot += dis(i, i-1);
     }
-    printf("%d\n", ans);
+    tot /= 2;
+    for(int i = 0; i < n-1; i++){
+        double cnt = dis(i, i+1);
+        if(cnt >= tot){
+            double ansx = x[i] + tot/cnt*(x[i+1]-x[i]);
+            double ansy = y[i] + tot/cnt*(y[i+1]-y[i]);
+            printf("%.1f %.1f\n", ansx, ansy);
+            return 0;
+        }
+        else tot -= cnt;
+    }
     return 0;
 }
 
