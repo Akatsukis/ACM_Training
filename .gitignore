@@ -7,4 +7,5 @@
 *.in
 *.out
 *.txt
+*.html
 /debug
