@@ -20,29 +20,31 @@ const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
 const int maxn = 2000+10;
-int a[maxn];
-int one[maxn];
+int dp[maxn][4];
 int n;
 
 int main()
 {
     sc(n);
-    for(int i = 1; i <= n; i++)sc(a[i]);
     int ans = 0;
-    for(int i = 1; i <= n; i++)one[i] = one[i-1]+(a[i]==1), ans = max(ans, one[i]);
-    for(int i = 1; i <= n; ){
-        if(a[i] == 2){
-            bool flag = 0;
-            int t = 0;
-            while(i+t <= n){
-                if(!flag && a[i+t] == 1)flag = 1;
-                else if(flag && a[i+t] == 2)break;
-                t++;
-            }
-            ans = max(ans, one[i-1]+t+(n-i-t+1)-(one[n]-one[i+t-1]));
-            i += t;
+    for(int i = 1; i <= n; i++){
+        int t;
+        sc(t);
+        if(t == 1){
+            dp[i][0] = dp[i-1][0]+1;
+            dp[i][1] = max(dp[i-1][0], dp[i-1][1]);
+            dp[i][2] = max(dp[i-1][2]+1, dp[i-1][1]+1);
+            dp[i][3] = max(dp[i-1][2], dp[i-1][3]);
         }
-        else i++;
+        else{
+            dp[i][0] = dp[i-1][0];
+            dp[i][1] = max(dp[i-1][1]+1, dp[i-1][0]+1);
+            dp[i][2] = max(dp[i-1][2], dp[i-1][1]);
+            dp[i][3] = max(dp[i-1][3]+1, dp[i-1][2]+1);
+        }
+        int u = max(dp[i][0], dp[i][1]), v = max(dp[i][2], dp[i][3]);
+        ans = max(ans, max(u, v));
+        //printf("%d %d %d %d\n", dp[i][0], dp[i][1], dp[i][2], dp[i][3]);
     }
     printf("%d\n", ans);
     return 0;
