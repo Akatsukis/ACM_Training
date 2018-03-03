@@ -9,7 +9,8 @@ using namespace std;
 #define se second
 #define ALL(A) A.begin(), A.end()
 #define sc(x) scanf("%d", &x)
-#define pr(x) printf(">>>"#x:"%d\n", x)
+#define pr(x) printf(">>>"#x":%d\n", x)
+#define sqr(x) ((x)*(x))
 #define fastio ios::sync_with_stdio(0),cin.tie(0)
 #define frein freopen("in.txt", "r", stdin)
 #define freout freopen("out.txt", "w", stdout)
@@ -19,40 +20,71 @@ const int INF = 0x3f3f3f3f;
 const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-int x[4], y[4], r[4];
-int vis[10];
+const int maxn = 5;
+double x[maxn], y[maxn], r[maxn];
+int vis[maxn];
+int n;
 
-int sqt(int x)
+double dis(int u, int v)
 {
-    return x*x;
+    return sqr(x[u]-x[v])+sqr(y[u]-y[v]);
 }
 
-int in(double sx, double sy, int id)
+bool its(int u, int v)
 {
-    return sqt((x[id]-sx))+sqt((y[id]-sy)) <= r[id];
+    return dis(u, v)<=sqr(r[u]+r[v])&&dis(u,v)>=sqr(r[u]-r[v]);
+}
+
+struct Point
+{
+    double x, y;
+    bool operator == (const Point& rbs)const
+    {
+        return fabs(x-rbs.x)<eps&&fabs(y-rbs.y)<eps;
+    }
+    Point(){}
+    Point(double _x, double _y):x(_x), y(_y){}
+}p[maxn*maxn*2];
+
+bool cmp(Point u, Point v)
+{
+    return fabs(u.x-v.x)<eps?u.y<v.y:u.x<v.x;
 }
 
 int main()
 {
-    int n;
+    int E = 0, V = 0, C = 0;
     sc(n);
     for(int i = 0; i < n; i++){
-        scanf("%d%d%d", &x[i], &y[i], &r[i]);
+        scanf("%lf%lf%lf", &x[i], &y[i], &r[i]);
     }
-    for(double i = -20; i <= 20; i += 0.05){
-        for(double j = -20; j <= 20; j += 0.05){
-            int bit = 0;
-            for(int k = 0; k < n; k++){
-                if(in(i, j, k))bit += (1<<k);
-            }
-            vis[bit] = 1;
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            if(i!=j && its(i, j))break;
+            if(j == n-1)C++;
         }
     }
-    int ans = 0;
-    for(int i = 0; i < 10; i++){
-        if(vis[i])ans++;
+    if(C != n)C++;
+    int cnt = 0;
+    for(int i = 0; i < n; i++){
+        for(int j = i+1; j < n; j++){
+            if(its(i, j)){
+                double d = sqrt(dis(i, j));
+                double a = atan2(y[j]-y[i], x[j]-x[i]);
+                double da = acos((r[i]*r[i]+d*d-r[j]*r[j])/(2*r[i]*d));
+                Point p1 = Point(x[i]+r[i]*cos(a-da), y[i]+r[i]*sin(a-da)), p2 = Point(x[i]+r[i]*cos(a+da), y[i]+r[i]*sin(a+da));
+                p[cnt++] = p1, p[cnt++] = p2;
+            }
+        }
     }
-    printf("%d\n", ans);
+    sort(p, p+cnt, cmp);
+    V = unique(p, p+cnt) - p;
+    for(int i = 0; i < V; i++){
+        for(int j = 0; j < n; j++){
+            if(fabs(sqr(p[i].x-x[j])+sqr(p[i].y-y[j])-sqr(r[j]))<eps)E++;
+        }
+    }
+    printf("%d\n", E-V+C+1);
     return 0;
 }
 
