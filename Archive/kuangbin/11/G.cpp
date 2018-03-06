@@ -20,7 +20,7 @@ const int INF = 0x3f3f3f3f;
 const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxv = 200010;
+const int maxv = 100010;
 struct edge
 {
     int to, cap, next;
