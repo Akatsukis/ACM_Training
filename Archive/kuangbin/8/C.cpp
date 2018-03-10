@@ -1,21 +1,4 @@
-#include <iostream>
-#include <cstdio>
-#include <cctype>
-#include <algorithm>
-#include <cstring>
-#include <string>
-#include <cmath>
-#include <vector>
-#include <set>
-#include <stack>
-#include <sstream>
-#include <queue>
-#include <map>
-#include <functional>
-#include <bitset>
-//#include <unordered_map>
-//#include <unordered_set>
-
+#include <bits/stdc++.h>
 using namespace std;
 #define ll long long
 #define ull unsigned long long
@@ -24,94 +7,79 @@ using namespace std;
 #define mk make_pair
 #define fi first
 #define se second
-#define mid(l,r) ((l)+((r)-(l))/2)
 #define ALL(A) A.begin(), A.end()
-#define rep(i,n) for(int (i)=0;(i)<(int)(n);(i)++)
-#define repr(i,n) for(int (i)=(int)(n);(i)>=0;(i)--)
-#define repab(i,a,b) for(int (i)=(int)(a);(i)<=(int)(b);(i)++)
-#define reprab(i,a,b) for(int (i)=(int)(a);(i)>=(int)(b);(i)--)
+#define sqr(x) ((x)*(x))
 #define sc(x) scanf("%d", &x)
-#define pr(x) printf("x:%dn", x)
+#define pr(x) printf(">>>"#x":%d\n", x)
 #define fastio ios::sync_with_stdio(0),cin.tie(0)
 #define frein freopen("in.txt", "r", stdin)
 #define freout freopen("out.txt", "w", stdout)
-#define freout1 freopen("out1.txt", "w", stdout)
-#define lson(rt) (rt*2+1)
-#define rson(rt) (rt*2+2)
-#define lb puts("")
-#define debug cout<<"???"<<endl
-#define PI 3.1415926535897932
+#define debug cout<<">>>STOP"<<endl
 const ll mod = 1000000007;
-const ll INF = 0x3f3f3f3f;
-const ll INF64 = 1223372036854775807;
+const int INF = 0x3f3f3f3f;
+const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 100 + 10;
-int n, m;
-int cost[maxn][maxn];
+const int maxn = 110;
+const int maxe = 20020;
+struct edge
+{
+    int v, w, nxt;
+}es[maxe];
+int id[maxn];
 int mincost[maxn];
-int pre[maxn];
-bool vis[maxn];
-bool used[maxn][maxn];
 int path[maxn][maxn];
+int pre[maxn];
+bool used[maxe];
+bool vis[maxn];
+int head[maxn];
+int n, m, cnt;
+
+void init()
+{
+    cnt = 0;
+    memset(head, -1, sizeof(head));
+}
+
+void add_edge(int u, int v, int w)
+{
+    es[cnt].v = v, es[cnt].w = w, es[cnt].nxt = head[u];
+    head[u] = cnt++;
+    es[cnt].v = u, es[cnt].w = w, es[cnt].nxt = head[v];
+    head[v] = cnt++;
+}
 
 int prim()
 {
     memset(mincost, INF, sizeof(mincost));
-    memset(path, 0, sizeof(path));
+    memset(used, 0, sizeof(used));
     memset(vis, 0, sizeof(vis));
-    memset(used, 0 ,sizeof(used));
-    memset(pre, 0, sizeof(pre));
-    int res = 0;
+    memset(path, 0, sizeof(path));
     mincost[1] = 0;
+    int ret = 0;
     while(1){
         int u = -1;
         for(int i = 1; i <= n; i++){
-            if(!vis[i] && (u == -1 || mincost[i] < mincost[u]))u = i;
+            if(!vis[i] && (u==-1 || mincost[i] < mincost[u]))u = i;
         }
         if(u == -1)break;
+        ret += mincost[u];
         vis[u] = 1;
-        used[u][pre[u]] =  used[pre[u]][u] = 1;
-        res += mincost[u];
-        //printf("mincost[%d]:%d\n", u, mincost[u]);
-        for(int i = 1; i <= n; i++){
-            if(!vis[i] && mincost[i] > cost[u][i]){
-                mincost[i] = cost[u][i];
-                pre[i] = u;
+        if(u != 1)used[id[u]] = used[id[u]^1] = 1;
+        for(int i = head[u]; ~i; i = es[i].nxt){
+            if(mincost[es[i].v] > es[i].w){
+                mincost[es[i].v] = es[i].w;
+                pre[es[i].v] = u;
+                id[es[i].v] = i;
             }
+        }
+        for(int i = 1; i <= n; i++){
             if(vis[i] && i != u){
                 path[i][u] = path[u][i] = max(path[i][pre[u]], mincost[u]);
             }
         }
     }
-    return res;
-}
-
-void work()
-{
-    sc(n);sc(m);
-    memset(cost, INF, sizeof(cost));
-    for(int i = 1; i <= m; i++){
-        int u, v, w;
-        sc(u);sc(v);sc(w);
-        cost[u][v] = cost[v][u] = w;
-    }
-    int ans1, ans2 = INF;
-    ans1 = prim();
-//    for(int i = 1; i <= n; i++){
-//        for(int j = 1; j <= n; j++){
-//            printf("%d%c", path[i][j], j == n ? '\n' : ' ');
-//        }
-//    }
-    for(int i = 1; i <= n; i++){
-        for(int j = 1; j <= n; j++){
-            if(i == j || cost[i][j] == INF)continue;
-            if(!used[i][j]){
-                ans2 = min(ans2, ans1 - path[i][j] + cost[i][j]);
-            }
-        }
-    }
-    printf("%d %d\n", ans1, ans2);
+    return ret;
 }
 
 int main()
@@ -119,9 +87,23 @@ int main()
     int T;
     sc(T);
     while(T--){
-        work();
+        init();
+        sc(n); sc(m);
+        int u, v, w;
+        for(int i = 0; i < m; i++){
+            sc(u); sc(v); sc(w);
+            add_edge(u, v, w);
+        }
+        int ans1 = prim(), ans2 = INF;
+        for(int i = 1; i <= n; i++){
+            for(int j = head[i]; ~j; j = es[j].nxt){
+                if(!used[j]){
+                    ans2 = min(ans2, ans1-path[i][es[j].v]+es[j].w);
+                }
+            }
+        }
+        printf("%d %d\n", ans1, ans2);
     }
-	return 0;
+    return 0;
 }
-
 
