@@ -1,99 +1,62 @@
-#include <iostream>
-#include <cstdio>
-#include <cctype>
-#include <algorithm>
-#include <cstring>
-#include <string>
-#include <cmath>
-#include <vector>
-#include <set>
-#include <stack>
-#include <sstream>
-#include <queue>
-#include <map>
-#include <functional>
-#include <bitset>
-//#include <unordered_map>
-//#include <unordered_set>
-
+#include <bits/stdc++.h>
 using namespace std;
-#define pb push_back
-#define mk make_pair
 #define ll long long
 #define ull unsigned long long
 #define pii pair<int, int>
-#define fst fi
-#define scd se
-#define mid ((l+r)/2)
+#define pb push_back
+#define mk make_pair
+#define fi first
+#define se second
 #define ALL(A) A.begin(), A.end()
-#define rep(i,n) for(int (i)=0;(i)<(int)(n);(i)++)
-#define repr(i, n) for(int (i)=(int)(n);(i)>=0;(i)--)
-#define repab(i,a,b) for(int (i)=(int)(a);(i)<=(int)(b);(i)++)
-#define reprab(i,a,b) for(int (i)=(int)(a);(i)>=(int)(b);(i)--)
+#define sqr(x) ((x)*(x))
+#define Abs(x) ((x)>=0?(x):(-(x)))
 #define sc(x) scanf("%d", &x)
-#define pr(x) printf(#x":%d\n", x)
-#define fastio ios::sync_with_stdio(0), cin.tie(0)
+#define pr(x) printf(">>>"#x":%d\n", x)
+#define fastio ios::sync_with_stdio(0),cin.tie(0)
 #define frein freopen("in.txt", "r", stdin)
 #define freout freopen("out.txt", "w", stdout)
-#define freout1 freopen("out1.txt", "w", stdout)
-#define lson (rt*2+1)
-#define rson (rt*2+2)
-#define lb puts("")
-#define PI M_PI
-#define debug cout<<"???"<<endl
-
-const ll mod = 1e9+7;
-const int INF = 2e9+5;
-//int INF = 0x3f3f3f3f;
-const double eps = 1e-6;
+#define debug cout<<">>>STOP"<<endl
+const ll mod = 1000000007;
+const int INF = 0x3f3f3f3f;
+const ll INF64 = 0x3f3f3f3f3f3f3f3f;
+const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 1e3 + 10;
-const int maxm = 2e6 + 10;
-int n, x, y, z;
-
-struct house
-{
-    int a, b, c;
-}h[maxn];
-
+const int maxn = 1010;
+const int maxe = 1001010;
+int n, m, cnt;
+int a[maxn], b[maxn], c[maxn];
 struct edge
 {
     int u, v, w;
-}es[maxm];
+}es[maxe];
 int in[maxn];
 int pre[maxn];
 int id[maxn];
 int vis[maxn];
 
-int dist(int i, int j)
+int dis(int i, int j)
 {
-    int res = abs(h[i].a-h[j].a) + abs(h[i].b-h[j].b) + abs(h[i].c-h[j].c);
-    return res;
+    return Abs(a[i]-a[j])+Abs(b[i]-b[j])+Abs(c[i]-c[j]);
 }
 
 ll zhuliu(int root, int V, int E)
 {
-    ll res = 0;
+    ll ret = 0;
     while(1){
-        for(int i = 0; i < V; i++)in[i] = INF;
-        for(int i = 0; i < E; i++){
-            int u = es[i].u, v = es[i].v;
-            if(u != v && in[v] > es[i].w){
-                in[v] = es[i].w;
-                pre[v] = u;
-            }
-        }
-        for(int i = 0; i < V; i++){
-            if(i != root && in[i] == INF)return -1;
-        }
-        memset(id, -1, sizeof(id));
+        memset(in, 0x3f, sizeof(in));
         memset(vis, -1, sizeof(vis));
-        in[root] = 0;
+        memset(id, -1, sizeof(id));
+        for(int i = 0; i < E; i++)if(es[i].u != es[i].v && in[es[i].v] > es[i].w){
+            in[es[i].v] = es[i].w;
+            pre[es[i].v] = es[i].u;
+        }
+        for(int i = 0; i < V; i++)if(i != root && in[i] == INF)return -1;
         int loop = 0;
+        in[root] = 0;
         for(int i = 0; i < V; i++){
+            ret += in[i];
             int v = i;
-            res += in[i];
-            while(vis[v] != i && id[v] == -1 && v != root){
+            while(id[v] == -1 && v != root && vis[v] != i){
                 vis[v] = i;
                 v = pre[v];
             }
@@ -105,51 +68,41 @@ ll zhuliu(int root, int V, int E)
             }
         }
         if(!loop)break;
-        for(int i = 0; i < V; i++){
-            if(id[i] == -1)id[i] = loop++;
-        }
+        for(int i = 0; i < V; i++)if(id[i] == -1)id[i] = loop++;
         for(int i = 0; i < E; i++){
-            int u = es[i].u, v = es[i].v;
-            es[i].u = id[u];
-            es[i].v = id[v];
-            if(es[i].u != es[i].v){
-                es[i].w -= in[v];
-            }
+            int v = es[i].v;
+            es[i].u = id[es[i].u];
+            es[i].v = id[es[i].v];
+            if(es[i].u != es[i].v)es[i].w -= in[v];
         }
         V = loop;
         root = id[root];
     }
-    return res;
-}
-
-
-void work()
-{
-    int V = n + 1, E = 0;
-    for(int i = 1; i <= n; i++){
-        scanf("%d%d%d", &h[i].a, &h[i].b, &h[i].c);
-        es[E].u = 0, es[E].v = i, es[E].w = h[i].c * x;
-        E++;
-    }
-    for(int i = 1; i <= n; i++){
-        int k;
-        sc(k);
-        for(int j = 0; j < k; j++){
-            int v;
-            sc(v);
-            es[E].u = i, es[E].v = v, es[E].w = dist(i, v) * y;
-            if(h[i].c < h[v].c)es[E].w += z;
-            E++;
-        }
-    }
-    ll ans = zhuliu(0, V, E);
-    printf("%lld\n", ans);
+    return ret;
 }
 
 int main()
 {
-    while(scanf("%d%d%d%d", &n, &x, &y, &z) != EOF && (n || x || y || z)){
-        work();
+    int n, x, y, z;
+    while(scanf("%d%d%d%d", &n, &x, &y, &z) != EOF && (n||x||y||z)){
+        cnt = 0;
+        for(int i = 1; i <= n; i++){
+            scanf("%d%d%d", &a[i], &b[i], &c[i]);
+            es[cnt].u = 0, es[cnt].v = i, es[cnt].w = x*c[i];
+            cnt++;
+        }
+        int k, v;
+        for(int i = 1; i <= n; i++){
+            sc(k);
+            for(int j = 0; j < k; j++){
+                sc(v);
+                es[cnt].u = i, es[cnt].v = v, es[cnt].w=y*dis(i, v)+(c[i]<c[v]?z:0);
+                cnt++;
+            }
+        }
+        ll ans = zhuliu(0, n+1, cnt);
+        printf("%lld\n", ans);
     }
     return 0;
 }
+
