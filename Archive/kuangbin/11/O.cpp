@@ -21,7 +21,7 @@ const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
 const int maxv = 1010;
-const int maxe = 100010;
+const int maxe = 200010;
 struct edge
 {
     int to, cap, next;
@@ -34,12 +34,14 @@ int dist1[maxv];
 int dist2[maxv];
 bool vis[maxv];
 vector<pii> G[maxv];
+vector<pii> H[maxv];
 
 void init()
 {
     cnt = 0;
     memset(head, -1, sizeof(head));
     for(int i = 0; i < maxv; i++)G[i].clear();
+    for(int i = 0; i < maxv; i++)H[i].clear();
 }
 
 void add_edge(int from, int to, int cap)
@@ -47,13 +49,12 @@ void add_edge(int from, int to, int cap)
     //printf("add(%d,%d,%d)\n", from, to, cap);
     es[cnt].to = to, es[cnt].cap = cap, es[cnt].next = head[from];
     head[from] = cnt++;
-    es[cnt].to = from, es[cnt].cap = cap, es[cnt].next = head[to];
+    es[cnt].to = from, es[cnt].cap = 0, es[cnt].next = head[to];
     head[to] = cnt++;
 }
 
-void spfa(int s, int d[maxv])
+void spfa(int s, int d[maxv], vector<pii> mp[maxv])
 {
-    fill(d, d+maxv, INF);
     memset(vis, 0, sizeof(vis));
     d[s] = 0;
     vis[s] = 1;
@@ -61,14 +62,17 @@ void spfa(int s, int d[maxv])
     q.push(s);
     while(!q.empty()){
         int v = q.front(); q.pop();
-        for(int i = 0; i < (int)G[v].size(); i++){
-            int u = G[v][i].fi, w = G[v][i].se;
-            if(!vis[u] && d[u] > d[v]+w){
+        vis[v] = 0;
+        for(int i = 0; i < (int)mp[v].size(); i++){
+            int u = mp[v][i].fi, w = mp[v][i].se;
+            if(d[u] > d[v]+w){
                 d[u] = d[v]+w;
-                q.push(u);
+                if(!vis[u]){
+                    vis[u] = 1;
+                    q.push(u);
+                }
             }
         }
-        vis[v] = 0;
     }
 }
 
@@ -108,6 +112,7 @@ int dfs(int v, int t, int f)
             }
         }
     }
+    if(!ret)lev[v] = 0;
     return ret;
 }
 
@@ -134,12 +139,14 @@ int main()
             sc(u); sc(v); sc(w);
             if(u != v){
                 G[u].pb(mk(v, w));
-                G[v].pb(mk(u, w));
+                H[v].pb(mk(u, w));
             }
         }
         int src, dst;
         sc(src); sc(dst);
-        spfa(src, dist1); spfa(dst, dist2);
+        memset(dist1, INF, sizeof(dist1));
+        memset(dist2, INF, sizeof(dist2));
+        spfa(src, dist1, G); spfa(dst, dist2, H);
         for(int i = 1; i <= n; i++){
             for(int j = 0; j < (int)G[i].size(); j++){
                 if(dist1[i]+dist2[G[i][j].fi]+G[i][j].se==dist1[dst]){
