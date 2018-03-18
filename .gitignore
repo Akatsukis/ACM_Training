@@ -8,4 +8,5 @@
 *.out
 *.txt
 *.html
+*.bak
 /debug
