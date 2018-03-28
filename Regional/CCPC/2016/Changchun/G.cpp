@@ -20,9 +20,10 @@ const int INF = 0x3f3f3f3f;
 const ll INF64 = 0x3f3f3f3f3f3f3f3f;
 const double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 51;
+const int maxn = 100;
 bool mp[maxn][maxn];
 ll fac[maxn];
+vector<int> vec;
 int n, m;
 
 void init()
@@ -35,7 +36,7 @@ int qpow(ll a, int n)
 {
     ll ret = 1;
     while(n){
-        if(n&1)ret = ret*a%mod;
+        if(n&1LL)ret = ret*a%mod;
         a = a*a%mod;
         n >>= 1;
     }
@@ -44,34 +45,34 @@ int qpow(ll a, int n)
 
 ll C(int a, int b)
 {
-    return fac[b]*qpow(fac[b-a+1], mod-2)%mod*qpow(fac[a], mod-2)%mod;
+    return fac[b]*qpow(fac[b-a], mod-2)%mod*qpow(fac[a], mod-2)%mod;
 }
 
-bool calc(vector<int> v)
+bool calc()
 {
-    int ret = 0, sz = v.size();
+    int ret = 0, sz = vec.size();
     for(int i = 0; i < sz; i++){
         for(int j = i+1; j < sz; j++){
             for(int k = j+1; k < sz; k++){
-                if(mp[v[i]][v[j]]&&mp[v[i]][v[k]]&&mp[v[j]][v[k]])ret++;
-                else if(!mp[v[i]][v[j]]&&!mp[v[i]][v[k]]&&!mp[v[j]][v[k]])ret++;
+                if(mp[vec[i]][vec[j]]&&mp[vec[i]][vec[k]]&&mp[vec[j]][vec[k]])return 1;
+                else if(!mp[vec[i]][vec[j]]&&!mp[vec[i]][vec[k]]&&!mp[vec[j]][vec[k]])return 1;
             }
         }
     }
     return ret;
 }
 
-int dfs(int id, int u, int k, vector<int> v)
+int dfs(int id, int u, int k)
 {
     int ret = 0;
     if(u == k){
-        ret += calc(v);
+        ret += calc();
         return ret;
     }
     for(int i = id; i <= n; i++){
-        v.pb(i);
-        ret = (ret+dfs(i+1, u+1, k, v))%mod;
-        v.pop_back();
+        vec.pb(i);
+        ret = (ret+dfs(i+1, u+1, k))%mod;
+        vec.pop_back();
     }
     return ret;
 }
@@ -92,7 +93,7 @@ int main()
         }
         ll ans = 0;
         for(int i = 6; i <= n; i++)ans = (ans+C(i, n))%mod;
-        for(int i = 3; i <= min(5, n); i++)ans = (ans+dfs(1, 0, i, vector<int>{}))%mod;
+        for(int i = 3; i <= min(5, n); i++)ans = (ans+dfs(1, 0, i))%mod;
         printf("Case #%d: %lld\n", kase++, ans);
     }
     return 0;
