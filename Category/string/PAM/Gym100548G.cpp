@@ -28,19 +28,24 @@ struct Node
     int cnt, state, nxt[maxn][26], len[maxn], sz[maxn][2], fail[maxn];
     void init()
     {
-        memset(nxt, 0, sizeof(nxt));
-        memset(len, 0, sizeof(len));
-        memset(sz, 0, sizeof(sz));
-        memset(fail, 0, sizeof(fail));
-        fail[0] = fail[1] = 1; len[1] = -1;
         cnt = 1, state = 0;
+        fail[0] = fail[1] = 1; len[1] = -1;
+        memset(nxt[0], 0, sizeof(nxt[0]));
+        memset(nxt[1], 0, sizeof(nxt[1]));
+    }
+    void init(int p)
+    {
+        memset(nxt[p], 0, sizeof(nxt[p]));
+        len[p] = sz[p][0] = sz[p][1] = fail[p] = 0;
     }
     void insert(int x, int pos, char* ch, int id)
     {
         int rt = state;
         while(ch[pos-len[rt]-1] != ch[pos])rt = fail[rt];
         if(!nxt[rt][x]){
-            int v = ++cnt, q = fail[rt]; len[v] = len[rt]+2;
+            int v = ++cnt, q = fail[rt]; 
+            init(v);
+            len[v] = len[rt]+2;
             while(ch[pos-len[q]-1] != ch[pos])q = fail[q];
             fail[v] = nxt[q][x];
             nxt[rt][x] = v;
@@ -62,11 +67,11 @@ int main()
     int T, kase = 1;
     sc(T);
     while(T--){
-        PAM.init();
         scanf("%s%s", s+1, t+1);
         s[0] = t[0] = -1;
-        int n = strlen(s+1), m = strlen(t+1);
+        PAM.init();
         ans = 0;
+        int n = strlen(s+1), m = strlen(t+1);
         for(int i = 1; i <= n; i++)PAM.insert(s[i]-'a', i, s, 0);
         PAM.state = 0;
         for(int i = 1; i <= m; i++)PAM.insert(t[i]-'a', i, t, 1);
