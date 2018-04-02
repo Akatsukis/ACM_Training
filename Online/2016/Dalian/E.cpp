@@ -29,6 +29,7 @@ int main()
         ll v = k/(u+1)+1;
         ll ans = L/(u*v);
         if(L%(u*v) > 0)ans++;
+        //if(L%(u*v) > k-u*v)ans++;
         printf("%lld\n", ans);
     }
     return 0;
