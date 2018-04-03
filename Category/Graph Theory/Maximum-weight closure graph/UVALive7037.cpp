@@ -1,18 +1,4 @@
-#include <iostream>
-#include <cstdio>
-#include <cctype>
-#include <algorithm>
-#include <cstring>
-#include <string>
-#include <cmath>
-#include <vector>
-#include <set>
-#include <stack>
-#include <sstream>
-#include <queue>
-#include <map>
-#include <functional>
-#include <bitset>
+#include <bits/stdc++.h>
 using namespace std;
 #define ll long long
 #define ull unsigned long long
@@ -32,18 +18,18 @@ using namespace std;
 const ll mod = 1000000007;
 const int INF = 0x3f3f3f3f;
 const ll INF64 = 0x3f3f3f3f3f3f3f3f;
-const double eps = 1e-7;
+const long double eps = 1e-7;
 template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
-const int maxn = 1e4+10;
-const int maxm = 1e4+10;
+const int maxn = 2e4+10;
+const int maxm = 2e5+10;
 struct edge
 {
     int to, nxt;
-    double cap;
+    long double cap;
 }es[maxm];
 int head[maxn], iter[maxn], lev[maxn];
 pii p[maxm];
-bool vis[maxn];
+int a[maxn];
 int N, M, cnt;
 
 void init()
@@ -52,9 +38,8 @@ void init()
     memset(head, -1, sizeof(head));
 }
 
-void add_edge(int u, int v, double cap)
+void add_edge(int u, int v, long double cap)
 {
-    //printf("add(%d,%d,%f)\n", u, v, cap);
     es[cnt].to = v, es[cnt].cap = cap, es[cnt].nxt = head[u];
     head[u] = cnt++;
     es[cnt].to = u, es[cnt].cap = 0, es[cnt].nxt = head[v];
@@ -81,19 +66,19 @@ bool bfs(int s, int t)
     return 0;
 }
 
-double dfs(int v, int t, double f)
+long double dfs(int v, int t, long double f)
 {
     if(v == t)return f;
-    double ret = 0;
+    long double ret = 0;
     for(int &i = iter[v]; ~i; i = es[i].nxt){
         edge &e = es[i];
         if(e.cap > eps && lev[e.to] == lev[v]+1){
-            double d = dfs(e.to, t, min(e.cap, f-ret));
+            long double d = dfs(e.to, t, min(e.cap, f-ret));
             if(d > eps){
                 e.cap -= d;
                 es[i^1].cap += d;
                 ret += d;
-                if(ret+eps >= f)break;
+                if(ret+eps>=f)break;
             }
         }
     }
@@ -101,9 +86,9 @@ double dfs(int v, int t, double f)
     return ret;
 }
 
-double max_flow(int s, int t)
+long double max_flow(int s, int t)
 {
-    double ret = 0;
+    long double ret= 0;
     while(bfs(s, t)){
         memcpy(iter, head, sizeof(head));
         ret += dfs(s, t, INF);
@@ -111,58 +96,47 @@ double max_flow(int s, int t)
     return ret;
 }
 
-bool solve(double m)
+
+bool solve(long double m)
 {
     init();
     int src = N+M+1, dst = src+1;
-    double sum = 0;
+    long double sum = 0;
     for(int i = 1; i <= N; i++)add_edge(i, dst, m);
     for(int i = 1; i <= M; i++){
+        int u = p[i].fi, v = p[i].se;
         add_edge(src, i+N, 1), sum += 1;
-        add_edge(i+N, p[i].fi, INF);
-        add_edge(i+N, p[i].se, INF);
+        add_edge(i+N, u, INF);
+        add_edge(i+N, v, INF);
     }
-    double ret = sum-max_flow(src, dst);
-    return ret > eps;
-}
-
-void dfs(int u)
-{
-    vis[u] = 1;
-    for(int i = head[u]; ~i; i = es[i].nxt){
-        edge &e = es[i];
-        if(!vis[e.to] && e.cap > eps)dfs(e.to);
-    }
+    long double ret = sum-max_flow(src, dst);
+    //printf("m=%f, ret=%Lf\n", m, ret);
+    return ret > 0;
 }
 
 int main()
 {
-    sc(N); sc(M);
-    for(int i = 1; i <= M; i++){
-        int u, v;
-        sc(u); sc(v);
-        p[i] = mk(u, v);
-    }
-    double l = 0, r = M, ans = 0;
-    while(l+1.0/(N*N) <= r){
-        double m = (l+r)/2;
-        if(solve(m)){
-            ans = m;
-            l = m;
+    int T, kase = 1;
+    sc(T);
+    while(T--){
+        M = 0;
+        sc(N);
+        for(int i = 1; i <= N; i++)sc(a[i]);
+        for(int i = 1; i <= N; i++){
+            for(int j = i+1; j <= N; j++){
+                if(a[i] > a[j])p[++M] = mk(i, j);
+            }
         }
-        else r = m;
-    }
-    solve(ans);
-    int src = N+M+1;
-    vector<int> vec;
-    dfs(src);
-    for(int i = 1; i <= N; i++){
-        if(vis[i])vec.pb(i);
-    }
-    if(vec.empty())vec.pb(1);
-    printf("%d\n", (int)vec.size());
-    for(int i = 0; i < (int)vec.size(); i++){
-        printf("%d\n", vec[i]);
+        long double l = 0, r = M, ans = 0;
+        while(l+eps < r){
+            long double m = (l+r)/2.0;
+            if(solve(m)){
+                ans = m;
+                l = m;
+            }
+            else r = m;
+        }
+        printf("Case #%d: %.10Lf\n", kase++, ans);
     }
     return 0;
 }
