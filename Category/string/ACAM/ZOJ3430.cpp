@@ -23,18 +23,16 @@ const int maxnode = 5e4+10;
 const int maxlen = 256;
 char s[maxs];
 bool bnr[maxs];
-int t[maxs];
+unsigned char t[maxs];
 struct Node
 {
     int nxt[maxnode][maxlen], fail[maxnode], last[maxnode], qry[maxnode];
     int idx;
-    queue<int> q;
     void init()
     {
         memset(nxt[0], -1, sizeof(nxt[0]));
         fail[0] = last[0] = qry[0] = 0;
         idx = 0;
-        while(!q.empty())q.pop();
     }
     void init(int u)
     {
@@ -56,6 +54,7 @@ struct Node
     }
     void get_fail()
     {
+        queue<int> q;
         int rt = 0;
         fail[rt] = rt;
         for(int i = 0; i < maxlen; i++){
@@ -102,7 +101,7 @@ int id(char c)
     else if(islower(c))return c-'a'+26;
     else if(isdigit(c))return c-'0'+52;
     else if(c == '+')return 62;
-    else if(c == '-')return 63;
+    else if(c == '/')return 63;
     return 64;
 }
 
@@ -124,8 +123,8 @@ int decode()
             len -= 2;
             continue;
         }
-        for(int j = 0; j < 6; j++){
-            bnr[len+5-j] = u%2;
+        for(int j = 5; j >= 0; j--){
+            bnr[len+j] = u%2;
             u /= 2;
         }
         len += 6;
@@ -158,4 +157,3 @@ int main()
     }
     return 0;
 }
-
