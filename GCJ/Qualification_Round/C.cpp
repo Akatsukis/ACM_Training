@@ -89,7 +89,7 @@ int main()
                 cost[i][j] = 9;
             }
         }
-        solve();
+        if(!solve())return 0;
     }
     return 0;
 }
