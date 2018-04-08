@@ -81,6 +81,7 @@ struct Node
                 if(v == -1)v = nxt[w][i];
                 else{
                     fail[v] = nxt[w][i];
+                    if(last[fail[v]])last[v] = 1;
                     q.push(v);
                 }
             }
@@ -101,13 +102,13 @@ struct Node
     }
 }ACAM;
 
-Mat mul(Mat a, Mat b)
+Mat mul(Mat a, Mat b, int sz)
 {
     Mat ret;
     ret.init();
-    for(int i = 0; i <= ACAM.idx+1; i++){
-        for(int k = 0; k <= ACAM.idx+1; k++){
-            for(int j = 0; j <= ACAM.idx+1; j++){
+    for(int i = 0; i <= sz; i++){
+        for(int k = 0; k <= sz; k++){
+            for(int j = 0; j <= sz; j++){
                 ret.a[i][j] += a.a[i][k]*b.a[k][j];
             }
         }
@@ -115,13 +116,13 @@ Mat mul(Mat a, Mat b)
     return ret;
 }
 
-Mat mpow(Mat a, ll n)
+Mat mpow(Mat a, int n, int sz)
 {
     Mat ret;
     ret.set();
     while(n){
-        if(n&1LL)ret = mul(ret, a);
-        a = mul(a, a);
+        if(n&1)ret = mul(ret, a, sz);
+        a = mul(a, a, sz);
         n >>= 1;
     }
     return ret;
@@ -129,9 +130,8 @@ Mat mpow(Mat a, ll n)
 
 int main()
 {
-    int n;
-    ll l;
-    while(scanf("%d%lld", &n, &l) != EOF){
+    int n, l;
+    while(scanf("%d%d", &n, &l) != EOF){
         ACAM.init();
         for(int i = 0; i < n; i++){
             scanf("%s", s);
@@ -139,11 +139,21 @@ int main()
         }
         ACAM.get_fail();
         ACAM.build();
-        mat = mpow(mat, l);
+        //for(int i = 0; i <= ACAM.idx+1; i++){
+            //for(int j = 0; j <= ACAM.idx+1; j++){
+                //printf("%lld ", mat.a[i][j]);
+            //}
+            //puts("");
+        //}
+        mat = mpow(mat, l, ACAM.idx+1);
         ull ans = 0;
         for(int i = 0; i <= ACAM.idx+1; i++){
-            ans += mat.a[0][i];
+            ans -= mat.a[0][i];
         }
+        mat.a[0][0] = 26, mat.a[0][1] = mat.a[1][1] = 1, mat.a[1][0] = 0;
+        mat = mpow(mat, l, 1);
+        ans = ans+mat.a[0][0]+mat.a[0][1];
+        printf("%llu\n", ans);
     }
     return 0;
 }
