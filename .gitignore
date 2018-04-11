@@ -9,4 +9,5 @@
 *.txt
 *.html
 *.bak
+*.class
 /debug
