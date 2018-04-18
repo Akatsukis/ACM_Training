@@ -27,7 +27,7 @@ struct edge
 };
 int head[maxv];
 edge es [maxv*2];
-int lev[maxv];
+int lev[maxv], iter[maxv];
 int n, m, cnt;
 
 void init()
@@ -44,7 +44,7 @@ void add_edge(int from, int to, int cap)
     head[to] = cnt++;
 }
 
-void bfs(int s, int t)
+bool bfs(int s, int t)
 {
     memset(lev, -1, sizeof(lev));
     lev[s] = 0;
@@ -52,22 +52,23 @@ void bfs(int s, int t)
     q.push(s);
     while(!q.empty()){
         int v = q.front(); q.pop();
-        if(v == t)return;
         for(int i = head[v]; ~i; i = es[i].next){
             edge &e = es[i];
             if(e.cap > 0 && lev[e.to] < 0){
                 lev[e.to] = lev[v]+1;
+                if(e.to == t)return 1;
                 q.push(e.to);
             }
         }
     }
+    return 0;
 }
 
 int dfs(int v, int t, int f)
 {
-    int ret = 0;
     if(v == t)return f;
-    for(int i = head[v]; ~i; i = es[i].next){
+    int ret = 0;
+    for(int &i = iter[v]; ~i; i = es[i].next){
         edge &e = es[i];
         if(e.cap > 0 && lev[e.to] == lev[v]+1){
             int d = dfs(e.to, t, min(e.cap, f-ret));
@@ -87,9 +88,8 @@ int dfs(int v, int t, int f)
 int max_flow(int s, int t)
 {
     int flow = 0;
-    while(1){
-        bfs(s, t);
-        if(lev[t] < 0)break;
+    while(bfs(s, t)){
+        memcpy(iter, head, sizeof(head));
         flow += dfs(s, t, INF);
     }
     return flow;
