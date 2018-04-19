@@ -79,8 +79,7 @@ struct Trie
 int main()
 {
     int n = 0;
-    while(scanf("%s", s[n++]) != EOF);
-    n--;
+    while(scanf("%s", s[n]) != EOF)n++;
     SAM.init();
     int len = strlen(s[0]);
     for(int i = 0; i < len; i++){
