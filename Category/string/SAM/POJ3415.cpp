@@ -1,4 +1,18 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <cstdio>
+#include <cctype>
+#include <algorithm>
+#include <cstring>
+#include <string>
+#include <cmath>
+#include <vector>
+#include <set>
+#include <stack>
+#include <sstream>
+#include <queue>
+#include <map>
+#include <functional>
+#include <bitset>
 using namespace std;
 #define ll long long
 #define ull unsigned long long
@@ -21,15 +35,23 @@ template<class T> T gcd(T a, T b){if(!b)return a;return gcd(b,a%b);}
 const int maxn = 2e5+10;
 char s[maxn];
 int ans[maxn];
+
+int id(char c)
+{
+    if(islower(c))return c-'a';
+    else return c-'A';
+}
+
 struct Trie
 {
-    int nxt[maxn][26], par[maxn], len[maxn];
+    int nxt[maxn][52], par[maxn], len[maxn], sz[maxn], rev[maxn];
     int lst, idx;
+    vector<int> son[maxn];
     int newnode()
     {
         int u = ++idx;
         memset(nxt[u], 0, sizeof(nxt[u]));
-        par[u] = len[u] = ans[u] = 0;
+        par[u] = len[u] = ans[u] = sz[u] = rev[u] = 0;
         return u;
     }
     void init()
@@ -40,7 +62,7 @@ struct Trie
     void extend(int c)
     {
         int rt = lst, np = newnode();
-        len[np] = len[rt]+1;
+        len[np] = len[rt]+1, sz[np] = 1;
         for(; rt && !nxt[rt][c]; rt = par[rt])nxt[rt][c] = np;
         if(!rt)par[np] = 1;
         else{
@@ -48,35 +70,47 @@ struct Trie
             if(len[q] == len[rt]+1)par[np] = q;
             else{
                 int nq = ++idx;
-                len[nq] = len[rt]+1;
-                par[nq] = par[q], ans[nq] = 0;
+                len[nq] = len[rt]+1, ans[nq] = 0, sz[nq] = 0;
+                par[nq] = par[q];
                 memcpy(nxt[nq], nxt[q], sizeof(nxt[q]));
-                par[q] = par[np] = nq;
+                par[np] = par[q] = nq;
                 for(; rt && nxt[rt][c] == q; rt = par[rt])nxt[rt][c] = nq;
             }
         }
         lst = np;
     }
-    void solve(char* t)
+    void dfs(int u)
     {
-        int rt = 1, n = strlen(t), now = 0;
-        for(int i = 0; i < n; i++){
-            while(rt && !nxt[rt][t[i]-'a'])rt = par[rt];
-            now = min(now, len[rt]);
-            rt = nxt[rt][t[i]-'a'];
-            if(rt)now++;
-            else rt = 1;
-            ans[rt] = max(ans[rt], now);
+        for(auto v : son[u]){
+            dfs(v);
+            sz[u] += sz[v];
         }
     }
-    ll calc()
+    void solve(char* t)
     {
+        for(int i = 0; i <= idx; i++)son[i].clear();
+        for(int i = 2; i <= idx; i++)son[par[i]].pb(i);
+        dfs(1);
+        int rt = 1, now = 0, n = strlen(t);
+        for(int i = 0; i < n; i++){
+            while(rt && !nxt[rt][id(t[i])])rt = par[rt];
+            now = min(now, len[rt]);
+            rt = nxt[rt][id(t[i])];
+            if(rt)now++;
+            else rt = 1;
+            if(now >= k)
+            ans[rt] = max(ans[rt], now);
+        }
         for(int i = idx; i > 1; i--)if(ans[i]){
             for(int j = par[i]; ans[j] != len[j]; j = par[j])ans[j] = len[j];
         }
+    }
+    ll calc(int k)
+    {
         ll ret = 0;
+        for(int i = 2; i <= idx; i++)printf("ans[%d]=%d\n", i ,ans[i]);
         for(int i = 2; i <= idx; i++){
-            if(len[i] > ans[i])ret += len[i]-max(len[par[i]], ans[i]);
+            if(len[par[i]]+1 >= k && ans[i] >= k)ret +=  sz[i]*(ans[i]-len[par[i]]), pr(sz[i]);
         }
         return ret;
     }
@@ -84,21 +118,16 @@ struct Trie
 
 int main()
 {
-    int T, kase = 1;
-    sc(T);
-    while(T--){
+    int k;
+    while(scanf("%d", &k) != EOF && k){
         SAM.init();
-        int n;
-        sc(n);
         scanf("%s", s);
-        int len = strlen(s);
-        for(int i = 0; i < len; i++)SAM.extend(s[i]-'a');
-        for(int i = 0; i < n; i++){
-            scanf("%s", s);
-            SAM.solve(s);
-        }
-        ll ret = SAM.calc();
-        printf("Case %d: %lld\n", kase++, ret);
+        int n = strlen(s);
+        for(int i = 0; i < n; i++)SAM.extend(id(s[i]));
+        scanf("%s", s);
+        SAM.solve(s);
+        ll ans = SAM.calc(k);
+        printf("%lld\n", ans);
     }
     return 0;
 }
