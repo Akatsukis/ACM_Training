@@ -1,18 +1,4 @@
-#include <iostream>
-#include <cstdio>
-#include <cctype>
-#include <algorithm>
-#include <cstring>
-#include <string>
-#include <cmath>
-#include <vector>
-#include <set>
-#include <stack>
-#include <sstream>
-#include <queue>
-#include <map>
-#include <functional>
-#include <bitset>
+#include <bits/stdc++.h>
 //#include <unordered_map>
 //#include <unordered_set>
 
