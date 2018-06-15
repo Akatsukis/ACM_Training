@@ -41,7 +41,7 @@ bool bfs()
     dis = INF;
     queue<int> q;
     for(int i = 1; i <= n; i++){
-        if(!mtx[i])q.push(i);
+        if(!mtx[i])q.push(i), dx[i] = 0;
     }
     while(!q.empty()){
         int u = q.front(); q.pop();
