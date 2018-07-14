@@ -10,4 +10,5 @@
 *.html
 *.bak
 *.class
+*.swp
 /debug
