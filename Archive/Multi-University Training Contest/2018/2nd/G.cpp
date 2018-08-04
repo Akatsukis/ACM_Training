@@ -49,7 +49,6 @@ void update(int a, int b, int k, int l, int r)
                 mx[k] = max(mx[lson], mx[rson]);
                 sum[k] = sum[lson]+sum[rson];
             }
-
         }
         else{
             mx[k]++;
