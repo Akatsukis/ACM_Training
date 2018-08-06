@@ -26,7 +26,7 @@ int main()
         for(int i = 1; i < n; i++){
             if(n%i == 0)tot += i, vec.pb(i);
         }
-        if(n%tot != 0)printf("Case %d: Not perfect.\n", kase++);
+        if(n != tot)printf("Case %d: Not perfect.\n", kase++);
         else{
             printf("Case %d: %d = ", kase++, n);
             for(int i = 0; i < SZ(vec); i++){

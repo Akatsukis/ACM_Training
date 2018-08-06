@@ -16,7 +16,8 @@ typedef pair<int, int> pii;
 #define ABS(x) ((x)>=0?(x):(-(x)))
 #define fastio ios::sync_with_stdio(0),cin.tie(0)
 template<class T>T gcd(T a, T b){return b?gcd(b, a%b):a;}
-const int maxv = 2019;
+ll lcm(ll a, ll b){return a/gcd(a, b)*b;}
+const int maxv = 2018;
 const int mod = 2018;
 const int maxn = 5e4+10;
 bool vis[maxv], inc[maxv];
@@ -49,7 +50,7 @@ void pushup(int k)
     tr[k].sum = tr[lson].sum+tr[rson].sum;
     tr[k].inc = tr[lson].inc&tr[rson].inc;
     if(tr[k].inc){
-        tr[k].len = gcd(tr[lson].len, tr[rson].len);
+        tr[k].len = lcm(tr[lson].len, tr[rson].len);
         tr[k].pos = 0;
         for(int i = 0, u = tr[lson].pos, v = tr[rson].pos; i < tr[k].len; i++){
             tr[k].v[i] = tr[lson].v[u]+tr[rson].v[v];
@@ -70,7 +71,6 @@ void build_circle(int k)
 
 void build(int k, int l, int r)
 {
-    tr[k].sum = tr[k].len = tr[k].pos = tr[k].tag = tr[k].inc = 0;
     if(l == r-1){
         tr[k].sum = val[l];
         if(inc[val[l]])build_circle(k);
@@ -88,6 +88,8 @@ void pushdown(int k, int l, int r)
         int &tag = tr[k].tag;
         tr[lson].pos = (tr[lson].pos+tag)%tr[lson].len;
         tr[rson].pos = (tr[rson].pos+tag)%tr[rson].len;
+        tr[lson].sum = tr[lson].v[tr[lson].pos];
+        tr[rson].sum = tr[rson].v[tr[rson].pos];
         tr[lson].tag += tag;
         tr[rson].tag += tag;
         tag = 0;
@@ -100,9 +102,8 @@ void update(int a, int b, int k, int l, int r)
     //fflush(stdout);
     if(a >= r || b <= l)return;
     else if(a <= l && b >= r && tr[k].inc){
-        int &pos = tr[k].pos;
-        pos = (pos+1)%tr[k].len;
-        tr[k].sum = tr[k].v[pos];
+        tr[k].pos = (tr[k].pos+1)%tr[k].len;
+        tr[k].sum = tr[k].v[tr[k].pos];
         tr[k].tag++;
         return;
     }
@@ -136,6 +137,7 @@ int main()
     int T, kase = 1; 
     sc(T);
     while(T--){
+        memset(tr, 0, sizeof(tr));
         printf("Case #%d:\n", kase++);
         int n; sc(n);
         for(int i = 0; i < n; i++)sc(val[i]);

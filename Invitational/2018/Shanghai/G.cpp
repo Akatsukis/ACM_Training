@@ -13,8 +13,9 @@ typedef pair<int, int> pii;
 #define sqr(x) ((x)*(x))
 #define ABS(x) ((x)>=0?(x):(-(x)))
 #define fastio ios::sync_with_stdio(0),cin.tie(0)
+#define double long double
 template<class T>T gcd(T a, T b){return b?gcd(b, a%b):a;}
-const double eps = 1e-6;
+const double eps = 1e-10;
 const double PI = acos(-1.0);
 struct Point
 {
@@ -36,10 +37,10 @@ int main()
     sc(T);
     while(T--){
         for(int i = 0; i < 4; i++){
-            scanf("%lf%lf", &p[i].x, &p[i].y);
+            scanf("%Lf%Lf", &p[i].x, &p[i].y);
         }
         bool flg = 0;
-        for(double i = 0; i <= PI; i += PI/360){
+        for(double i = 0; i <= PI; i += PI/3600){
             for(int j = 0; j < 4; j++)q[j] = Rotate(p[j], i);
             double mn[2], mx[2];
             mn[0] = mx[0] = q[0].x;
@@ -50,14 +51,12 @@ int main()
                 mn[1] = min(mn[1], q[j].y);
                 mx[1] = max(mx[1], q[j].y);
             }
-            //printf("x(%f,%f)\n", mn[0], mx[0]);
-            //printf("y(%f,%f)\n", mn[1], mx[1]);
             bool now = 1;
             for(int j = 0; j < 4; j++){
-                //printf("(%f,%f)\n", q[j].x, q[j].y);
                 if(fabs(mn[0]-q[j].x) > eps && fabs(mx[0]-q[j].x) > eps)now = 0;
                 if(fabs(mn[1]-q[j].y) > eps && fabs(mx[1]-q[j].y) > eps)now = 0;
             }
+            if(fabs(fabs(mn[0]-mx[0])-fabs(mn[1]-mx[1])) > eps)now = 0;
             if(now){
                 flg = 1;
                 break;

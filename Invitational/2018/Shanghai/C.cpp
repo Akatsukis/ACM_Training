@@ -13,10 +13,14 @@ typedef pair<int, int> pii;
 #define sqr(x) ((x)*(x))
 #define ABS(x) ((x)>=0?(x):(-(x)))
 #define fastio ios::sync_with_stdio(0),cin.tie(0)
-template<class T>T gcd(T a, T b){return b?gcd(b, a%b):a;}
+ll gcd(ll a, ll b){return b?gcd(b, a%b):a;}
 ll lcm(ll a, ll b){return a/gcd(a, b)*b;}
+const ll INF = 0x3f3f3f3f;
+const int maxn = 1e3+10;
+char ans[maxn];
+int pt = 0;
 
-void scan(__int128 &ret)
+void scan(ll &ret)
 {
     char c; 
     int sgn;
@@ -31,24 +35,29 @@ void scan(__int128 &ret)
     ret *= sgn;
 }
 
-void print(__int128 x)
+void print(ll x)
 {
     if(x > 9)print(x/10);
-    putchar(x%10+'0');
+    ans[pt++] = x%10+'0';
 }
 
 struct Rat
 {
-    ll a, b;
+    ll a = 0, b = 1;
     Rat(){}
-    Rat(ll a, ll b):a(a), b(b){}
+    Rat(ll _a, ll _b)
+    {
+        a = _a, b = _b;
+        ll d = gcd(a, b);
+        a /= d, b /= d;
+    }
     Rat operator + (const Rat &rhs)const
     {
         Rat ret;
         ret.b = lcm(b, rhs.b);
         ret.a = ret.b/b*a+ret.b/rhs.b*rhs.a;
-        ll d = gcd(ret.b, ret.a);
-        ret.a /= d, ret.b /= d;
+        ll d = gcd(ret.a, ret.b);
+        if(d != 1)ret.a /= d, ret.b /= d;
         return ret;
     }
     Rat operator - (const Rat &rhs)const
@@ -57,29 +66,25 @@ struct Rat
         ret.b = lcm(b, rhs.b);
         ret.a = ret.b/b*a-ret.b/rhs.b*rhs.a;
         ll d = gcd(ret.a, ret.b);
-        ret.a /= d, ret.b /= d;
+        if(d != 1)ret.a /= d, ret.b /= d;
         return ret;
     }
     Rat operator * (const Rat &rhs)const
     {
         Rat ret;
-        ll d1 = gcd(a, rhs.b);
-        ll d2 = gcd(b, rhs.a);
-        ret.a = (a/d1)*(rhs.a/d2);
-        ret.b = (b/d2)*(rhs.b/d1);
+        ret.a = a*rhs.a;
+        ret.b = b*rhs.b;
         ll d = gcd(ret.a, ret.b);
-        ret.a /= d, ret.b /= d;
+        if(d != 1)ret.a /= d, ret.b /= d;
         return ret;
     }
     Rat operator / (const Rat &rhs)const
     {
         Rat ret;
-        ll d1 = gcd(a, rhs.a);
-        ll d2 = gcd(b, rhs.b);
-        ret.a = (a/d1)*(rhs.b/d2);
-        ret.b = (b/d2)*(rhs.a/d1);
+        ret.a = a*rhs.b;
+        ret.b = b*rhs.a;
         ll d = gcd(ret.a, ret.b);
-        ret.a /= d, ret.b /= d;
+        if(d != 1)ret.a /= d, ret.b /= d;
         return ret;
     }
     bool operator < (const Rat &rhs)const
@@ -92,25 +97,26 @@ struct Rat
     }
     void output()
     {
-        if(a < 0 || b < 0){
-            putchar('-');
-            a = ABS(a); b = ABS(b);
-        }
         ll u = a/b, v = a%b;
-        //print(a);
-        //puts("");
-        //print(b);
-        //puts("");
+        pt = 0;
         print(u);
-        putchar('.');
+        ans[pt++] = '.';
         //printf("%lld.", u);
         for(int i = 0; i < 30; i++){
             v *= 10;
-            print(v/b);
+            ans[pt++] = v/b+'0';
             //printf("%lld", v/b);
             v %= b;
         }
-        puts("");
+        ans[pt] = 0;
+        if(v*10/b >= 5)ans[pt-1]++;
+        while(ans[pt-1] > '9'){
+            ans[pt-1] = '0';
+            pt--;
+            ans[pt-1]++;
+        }
+        puts(ans);
+        //puts("");
     }
 };
 
@@ -156,6 +162,11 @@ Rat DistanceToSegment(Point P, Point A, Point B)
     else return Length(Cross(v1, v2))/Length(v1);
 }
 
+Vector GetPointOnLine(Point A, Point B, Rat t)
+{
+    return Vector(A.x+t*(B.x-A.x), A.y+t*(B.y-A.y), A.z+t*(B.z-A.z));
+}
+
 int main()
 {
     int T;
@@ -167,17 +178,25 @@ int main()
             //scanf("%lld%lld%lld", &a, &b, &c);
             p[i] = Point(Rat(a, 1), Rat(b, 1), Rat(c, 1));
         }
-        Rat ret;
-        bool flg = LineDistanse3D(p[0], (p[1]-p[0]), p[2], (p[3]-p[2]), ret);
-        if(flg){
-            ret = DistanceToSegment(p[0]+(p[1]-p[0])*ret, p[2], p[3]);
+        Rat s, t, ret(INF, 1);
+        bool flg = 0;
+        if(LineDistanse3D(p[0], p[1]-p[0], p[2], p[3]-p[2], s)){
+            if(s.a > 0 && s.b > 0 && s.a < s.b && LineDistanse3D(p[2], p[3]-p[2], p[0], p[1]-p[0], t)){
+                if(t.a > 0 && t.b > 0 && t.a < t.b){
+                    flg = 1;
+                    Vector p1 = GetPointOnLine(p[0], p[1], s);
+                    Vector p2 = GetPointOnLine(p[2], p[3], t);
+                    ret = Length(p1-p2);
+                }
+            }
         }
-        else{
-            ret = DistanceToSegment(p[0], p[2], p[3]);
+        if(!flg){
+            ret = min(ret, DistanceToSegment(p[0], p[2], p[3]));
             ret = min(ret, DistanceToSegment(p[1], p[2], p[3]));
             ret = min(ret, DistanceToSegment(p[2], p[0], p[1]));
             ret = min(ret, DistanceToSegment(p[3], p[0], p[1]));
         }
+        //print(ret.a), putchar(' '), print(ret.b), putchar('\n');
         ret.output();
     }
     return 0;

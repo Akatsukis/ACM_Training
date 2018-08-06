@@ -35,9 +35,9 @@ int main()
             }
         }
         int ans = INF;
-        for(int i = 0; i <= 400; i++){
-            for(int j = 0; j <= 400; j++){
-                if(i*n != j*m)continue;
+        for(int i = 0; i <= 1000; i++){
+            for(int j = 0; j <= 1000; j++){
+                if(i*n != j*m || i*n%m != 0 || j*m%n != 0)continue;
                 int now1 = 0, now2 = 0;
                 for(int k = 0; k < n; k++)now1 += ABS(sumr[k]-i);
                 for(int k = 0; k < m; k++)now2 += ABS(sumc[k]-j);
