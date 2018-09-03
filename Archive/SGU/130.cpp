@@ -14,25 +14,19 @@ typedef pair<int, int> pii;
 #define ABS(x) ((x)>=0?(x):(-(x)))
 #define fastio ios::sync_with_stdio(0),cin.tie(0)
 template<class T>T gcd(T a, T b){return b?gcd(b, a%b):a;}
-const int maxn = 100;
-ll a[maxn];
+const int maxn = 40;
+ll dp[maxn];
 
 int main()
 {
-    int n; sc(n);
-    for(int i = 0; i < n; i++)scanf("%lld", &a[i]);
-    ll ans = 0;
-    bool update = 1;
-    while(update){
-        update = 0;
-        for(int i = 0; i < n; i++){
-            if((ans^a[i]) > ans){
-                ans = ans^a[i];
-                update = 1;
-            }
+    int k; sc(k);
+    dp[0] = 1;
+    for(int i = 1; i <= k; i++){
+        for(int j = 1; j <= i; j++){
+            dp[i] += dp[j-1]*dp[i-j];
         }
     }
-    printf("%lld\n", ans);
+    printf("%lld %d\n", dp[k], k+1);
     return 0;
 }
 
