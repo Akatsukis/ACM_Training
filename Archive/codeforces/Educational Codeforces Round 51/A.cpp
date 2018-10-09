@@ -37,45 +37,20 @@ int main()
         memset(tot, 0, sizeof(tot));
         string s;
         cin >> s;
-        for(auto c : s){
-            tot[id(c)]++;
-        }
-        int zero = 0;
-        for(int i = 0; i < 3; i++){
-            if(!tot[i])zero++;
-        }
-        if(!zero)cout << s << endl;
-        else if(zero == 1){
-            for(int i = 0; i < SZ(s); i++){
-                if(tot[id(s[i])] > 1){
-                    for(int j = 0; j < 3; j++){
-                        if(!tot[j]){
-                            s[i] = get(j);
-                            break;
-                        }
+        for(auto c : s)tot[id(c)]++;
+        for(auto &c : s){
+            if(tot[id(c)] > 1){
+                for(int j = 0; j < 3; j++){
+                    if(!tot[j]){
+                        tot[j]++;
+                        tot[id(c)]--;
+                        c = get(j);
+                        break;
                     }
-                    break;
                 }
             }
-            cout << s << endl;
         }
-        else{
-            for(int i = 0; i < 3; i++){
-                if(!tot[i]){
-                    s[0] = get(i);
-                    tot[i]++;
-                    break;
-                }
-            }
-            for(int i = 0; i < 3; i++){
-                if(!tot[i]){
-                    s[1] = get(i);
-                    tot[i]++;
-                    break;
-                }
-            }
-            cout << s << endl;
-        }
+        cout << s << endl;
     }
     return 0;
 }
