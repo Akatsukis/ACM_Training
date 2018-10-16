@@ -1,7 +1,7 @@
 #include <cstdio>
-#include <cmath>
 #include <algorithm>
-#include <functional>
+#include <cmath>
+#include <vector>
 using namespace std;
 typedef long long ll;
 typedef unsigned long long ull;
@@ -17,23 +17,25 @@ typedef pair<int, int> pii;
 #define ABS(x) ((x)>=0?(x):(-(x)))
 #define fastio ios::sync_with_stdio(0),cin.tie(0)
 template<class T>T gcd(T a, T b){return b?gcd(b, a%b):a;}
+const int mod = 1e9+7;
 const int maxn = 1e5+10;
 int a[maxn];
+int n;
 
 int main()
 {
     int T; sc(T);
     while(T--){
-        int n, k;
-        sc(n); sc(k);
+        sc(n);
         for(int i = 0; i < n; i++)sc(a[i]);
-        sort(a, a+n, greater<int>());
-        int ans = k;
-        for(int i = k; i < n; i++){
-            if(a[i] == a[k-1])ans++;
-            else break;
+        sort(a, a+n);
+        ll ans = 1;
+        for(int i = n-1; i >= 0; i -= 2){
+            int val = a[i-1];
+            int num = i-(lower_bound(a, a+n, val)-a);
+            ans = ans*num%mod;
         }
-        printf("%d\n", ans);
+        printf("%lld\n", ans);
     }
     return 0;
 }

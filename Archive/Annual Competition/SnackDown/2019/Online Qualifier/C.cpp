@@ -1,7 +1,5 @@
 #include <cstdio>
-#include <cmath>
 #include <algorithm>
-#include <functional>
 using namespace std;
 typedef long long ll;
 typedef unsigned long long ull;
@@ -19,19 +17,23 @@ typedef pair<int, int> pii;
 template<class T>T gcd(T a, T b){return b?gcd(b, a%b):a;}
 const int maxn = 1e5+10;
 int a[maxn];
+ll sum[maxn];
+int n;
 
 int main()
 {
     int T; sc(T);
     while(T--){
-        int n, k;
-        sc(n); sc(k);
-        for(int i = 0; i < n; i++)sc(a[i]);
-        sort(a, a+n, greater<int>());
-        int ans = k;
-        for(int i = k; i < n; i++){
-            if(a[i] == a[k-1])ans++;
-            else break;
+        sc(n);
+        for(int i = 1; i <= n; i++){
+            sc(a[i]);
+            sum[i] = sum[i-1]+a[i];
+        }
+        int ans = 0;
+        ll tot = 1;
+        while(tot < n){
+            ans++;
+            tot += sum[tot];
         }
         printf("%d\n", ans);
     }
