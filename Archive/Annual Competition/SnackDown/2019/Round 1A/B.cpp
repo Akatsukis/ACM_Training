@@ -22,19 +22,12 @@ int main()
     int T; sc(T);
     while(T--){
         int n; sc(n);
-        int pos = 0;
+        for(int i = 0; i < n; i++)sc(a[i]);
+        int rev = 0;
         for(int i = 0; i < n; i++){
-            sc(a[i]);
-            if(i && a[i] <= a[i-1])pos = i;
+            if(a[i] > (a[(i+1)%n]))rev++;
         }
-        bool flg = 1;
-        for(int i = 1; i < n; i++){
-            if(a[(pos+i)%n] < a[(pos+i-1)%n]){
-                flg = 0;
-                break;
-            }
-        }
-        if(flg)puts("YES");
+        if(rev <= 1)puts("YES");
         else puts("NO");
     }
     return 0;
